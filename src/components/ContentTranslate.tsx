@@ -71,7 +71,13 @@ const mdComponents: Components = {
   ),
 };
 
-export default function ContentTranslate({ content }: { content: string }) {
+export default function ContentTranslate({
+  content,
+  cacheKey,
+}: {
+  content: string;
+  cacheKey?: string;
+}) {
   const { lang } = useLanguage();
   const [showTranslated, setShowTranslated] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
@@ -81,25 +87,48 @@ export default function ContentTranslate({ content }: { content: string }) {
   const detectedLang = detectLanguage(content);
   const needsTranslation = detectedLang !== "other" && detectedLang !== lang;
 
-  // Reset when language changes
   useEffect(() => {
     setTranslatedContent(null);
     setShowTranslated(false);
-  }, [lang]);
-
-  const handleTranslate = async () => {
-    if (translatedContent) {
-      setShowTranslated(true);
-      return;
-    }
-    setTranslating(true);
-    const result = await translateLongText(content, lang, (current, total) => {
-      setProgress({ current, total });
-    });
-    setTranslatedContent(result);
     setTranslating(false);
-    setShowTranslated(true);
-  };
+    setProgress({ current: 0, total: 0 });
+
+    if (!needsTranslation) return;
+
+    let cancelled = false;
+    const fullKey = cacheKey ? `tr2_full_${lang}_${cacheKey}` : null;
+
+    const doTranslate = async () => {
+      // Try full-content cache first
+      if (fullKey && typeof window !== "undefined") {
+        const cached = localStorage.getItem(fullKey);
+        if (cached) {
+          if (!cancelled) {
+            setTranslatedContent(cached);
+            setShowTranslated(true);
+          }
+          return;
+        }
+      }
+
+      if (!cancelled) setTranslating(true);
+      const result = await translateLongText(content, lang, (current, total) => {
+        if (!cancelled) setProgress({ current, total });
+      });
+      if (cancelled) return;
+
+      setTranslating(false);
+      setTranslatedContent(result);
+      setShowTranslated(true);
+
+      if (fullKey && typeof window !== "undefined") {
+        try { localStorage.setItem(fullKey, result); } catch { /* quota exceeded */ }
+      }
+    };
+
+    doTranslate();
+    return () => { cancelled = true; };
+  }, [content, lang, needsTranslation, cacheKey]);
 
   const displayContent = showTranslated && translatedContent ? translatedContent : content;
 
@@ -113,7 +142,7 @@ export default function ContentTranslate({ content }: { content: string }) {
             </span>
           ) : (
             <button
-              onClick={showTranslated ? () => setShowTranslated(false) : handleTranslate}
+              onClick={() => setShowTranslated((v) => !v)}
               className="cursor-pointer text-xs text-indigo-400 hover:underline"
             >
               {showTranslated ? "原文に戻す" : `${LANG_NAMES[lang] ?? lang}に翻訳`}

@@ -124,7 +124,7 @@ export default async function SkillDetailPage({ params }: Props) {
 
       <hr className="my-8 border-gray-200 dark:border-white/10" />
 
-      <ContentTranslate content={fullContent} />
+      <ContentTranslate content={fullContent} cacheKey={skill.id} />
 
       <div className="mt-10 flex gap-4 border-t border-gray-200 pt-6 dark:border-white/10">
         <a href={skill.repoUrl} target="_blank" rel="noopener noreferrer"
