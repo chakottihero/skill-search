@@ -36,16 +36,18 @@ export default function DescriptionToggle({
     }
     const cacheKey = getCacheKey(description, lang);
     const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
-    if (cached) {
+    if (cached && cached !== description) {
       setTranslatedText(cached);
       setShowTranslated(true);
       return;
     }
     setLoading(true);
     const result = await translateText(description, lang);
-    setTranslatedText(result);
-    if (typeof window !== "undefined") localStorage.setItem(cacheKey, result);
     setLoading(false);
+    if (result && result !== description) {
+      setTranslatedText(result);
+      if (typeof window !== "undefined") localStorage.setItem(cacheKey, result);
+    }
     setShowTranslated(true);
   };
 

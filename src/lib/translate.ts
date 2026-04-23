@@ -8,7 +8,7 @@ export function detectLanguage(text: string): "ja" | "zh" | "en" | "other" {
 }
 
 export function getCacheKey(text: string, targetLang: string): string {
-  return `translate_${targetLang}_${text.slice(0, 50)}`;
+  return `tr2_${targetLang}_${simpleHash(text)}`;
 }
 
 function simpleHash(str: string): string {
@@ -100,7 +100,7 @@ export async function translateLongText(
     if (headingMatch) {
       const prefix = headingMatch[1];
       const headingText = headingMatch[2];
-      const cacheKey = `tr_${tl}_${simpleHash(headingText)}`;
+      const cacheKey = `tr2_${tl}_${simpleHash(headingText)}`;
       const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
       if (cached) {
         translatedParts.push(prefix + cached);
@@ -116,7 +116,7 @@ export async function translateLongText(
 
     // Regular text ≤ 4000 chars
     if (trimmed.length <= 4000) {
-      const cacheKey = `tr_${tl}_${simpleHash(trimmed)}`;
+      const cacheKey = `tr2_${tl}_${simpleHash(trimmed)}`;
       const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
       if (cached) {
         translatedParts.push(cached);
@@ -143,7 +143,7 @@ export async function translateLongText(
 
       const translatedChunks: string[] = [];
       for (const c of chunks) {
-        const cacheKey = `tr_${tl}_${simpleHash(c)}`;
+        const cacheKey = `tr2_${tl}_${simpleHash(c)}`;
         const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
         if (cached) {
           translatedChunks.push(cached);
