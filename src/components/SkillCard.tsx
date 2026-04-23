@@ -81,6 +81,11 @@ export default function SkillCard({ skill }: { skill: Skill }) {
             日本語
           </span>
         )}
+        {skill.language === "en" && (
+          <span className="rounded border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-sky-400">
+            English
+          </span>
+        )}
       </div>
 
       {skill.installCommand && (
