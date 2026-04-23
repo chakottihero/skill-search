@@ -43,3 +43,4 @@ data/skills-content/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.github/
