@@ -6,7 +6,7 @@ const NAV_ITEMS = [
   { icon: "🏠", label: "ホーム", desc: "スキルを検索", href: "/" },
   { icon: "🔍", label: "検索", desc: "キーワードで探す", href: "/search" },
   { icon: "📂", label: "カテゴリ", desc: "分野別に探す", href: "/categories" },
-  { icon: "📤", label: "出品する", desc: "スキルを公開", href: "/submit" },
+  { icon: "📤", label: "出品・販売", desc: "スキルの出品・購入", href: "/submit" },
 ];
 
 export default function HamburgerPanel({

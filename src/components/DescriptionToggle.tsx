@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage, type Lang } from "@/context/LanguageContext";
 import { detectLanguage, getCacheKey, translateText } from "@/lib/translate";
 
@@ -13,32 +13,41 @@ export default function DescriptionToggle({
   className?: string;
 }) {
   const { lang } = useLanguage();
-  const [showTranslated, setShowTranslated] = useState(true);
+  const [showTranslated, setShowTranslated] = useState(false);
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const detectedLang = detectLanguage(description);
   const needsTranslation = detectedLang !== "other" && detectedLang !== lang;
 
-  useEffect(() => {
-    if (!needsTranslation) return;
-    const cacheKey = getCacheKey(description, lang);
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      setTranslatedText(cached);
-      return;
-    }
-    setLoading(true);
-    translateText(description, lang).then((result) => {
-      setTranslatedText(result);
-      localStorage.setItem(cacheKey, result);
-      setLoading(false);
-    });
-  }, [description, lang, needsTranslation]);
-
   if (!needsTranslation) {
     return <p className={className}>{description}</p>;
   }
+
+  const handleClick = async () => {
+    if (loading) return;
+    if (showTranslated) {
+      setShowTranslated(false);
+      return;
+    }
+    if (translatedText) {
+      setShowTranslated(true);
+      return;
+    }
+    const cacheKey = getCacheKey(description, lang);
+    const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
+    if (cached) {
+      setTranslatedText(cached);
+      setShowTranslated(true);
+      return;
+    }
+    setLoading(true);
+    const result = await translateText(description, lang);
+    setTranslatedText(result);
+    if (typeof window !== "undefined") localStorage.setItem(cacheKey, result);
+    setLoading(false);
+    setShowTranslated(true);
+  };
 
   const displayText = showTranslated && translatedText ? translatedText : description;
   const buttonText = loading
@@ -51,7 +60,7 @@ export default function DescriptionToggle({
     <div className="relative">
       <p className={`${className ?? ""} pr-20`}>{displayText}</p>
       <button
-        onClick={() => !loading && setShowTranslated((v) => !v)}
+        onClick={handleClick}
         disabled={loading}
         className="absolute right-0 top-0 cursor-pointer whitespace-nowrap text-xs text-indigo-400 hover:underline disabled:opacity-50 disabled:cursor-wait"
       >

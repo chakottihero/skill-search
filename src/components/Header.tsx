@@ -7,7 +7,7 @@ import { useTheme } from "@/lib/theme-context";
 import HamburgerPanel from "./HamburgerPanel";
 
 const T = {
-  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品する", submitShort: "出品", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
+  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品・販売", submitShort: "出品・販売", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
   en: { home: "Home", search: "Search", categories: "Categories", submit: "Submit", submitShort: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark" },
   zh: { home: "首页", search: "搜索", categories: "分类", submit: "提交", submitShort: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色" },
 } as const;
