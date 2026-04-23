@@ -10,12 +10,15 @@ export interface Skill {
   language: "ja" | "en" | "unknown";
   categories: string[];
   installCommand: string;
+  category?: string;
+  subcategory?: string;
 }
 
 export interface SearchOptions {
   sortBy?: "stars" | "updatedAt" | "relevance";
   language?: "ja" | "en";
   category?: string;
+  subcategory?: string;
 }
 
 export interface CrawlResult {

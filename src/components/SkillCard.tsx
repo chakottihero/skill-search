@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Skill } from "@/lib/types";
 import CopyButton from "./CopyButton";
 import DescriptionToggle from "./DescriptionToggle";
+import { CATEGORY_MAP } from "@/lib/categories";
 
 const TOOL_KEYWORDS: { label: string; keywords: string[] }[] = [
   { label: "Claude Code", keywords: ["claude code", "claude", ".claude"] },
@@ -29,6 +30,7 @@ function formatDate(iso: string): string {
 
 export default function SkillCard({ skill, index = 0 }: { skill: Skill; index?: number }) {
   const tools = detectTools(skill);
+  const catDef = skill.category ? CATEGORY_MAP.get(skill.category) : null;
 
   return (
     <article className="py-6">
@@ -70,7 +72,27 @@ export default function SkillCard({ skill, index = 0 }: { skill: Skill; index?: 
           </span>
         ))}
 
-        {skill.categories.map((cat) => (
+        {/* Category badge */}
+        {skill.category && (
+          <Link
+            href={`/search?category=${encodeURIComponent(skill.category)}`}
+            className="rounded border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-indigo-600 transition-colors hover:bg-indigo-100 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-400"
+          >
+            {catDef?.icon ?? "📦"} {skill.category}
+          </Link>
+        )}
+
+        {/* Subcategory badge */}
+        {skill.subcategory && (
+          <Link
+            href={`/search?category=${encodeURIComponent(skill.category ?? "")}&subcategory=${encodeURIComponent(skill.subcategory)}`}
+            className="rounded border border-purple-200 bg-purple-50 px-2 py-0.5 text-purple-600 transition-colors hover:bg-purple-100 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-400"
+          >
+            {skill.subcategory}
+          </Link>
+        )}
+
+        {skill.categories.slice(0, 2).map((cat) => (
           <span
             key={cat}
             className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-gray-400"

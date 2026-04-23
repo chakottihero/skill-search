@@ -10,7 +10,10 @@
     "crawl": "tsx scripts/crawl.ts",
     "crawl:full": "tsx scripts/crawl.ts",
     "crawl:update": "tsx scripts/crawl.ts --update",
-    "build:data": "node -e \"const fs=require('fs');const d=JSON.parse(fs.readFileSync('data/skills.json','utf-8'));d.skills=d.skills.map(({content,...s})=>s);fs.writeFileSync('data/skills-index.json',JSON.stringify(d));console.log('wrote',d.skills.length,'skills to data/skills-index.json');\""
+    "build:data": "node -e \"const fs=require('fs');const d=JSON.parse(fs.readFileSync('data/skills.json','utf-8'));d.skills=d.skills.map(({content,...s})=>s);fs.writeFileSync('data/skills-index.json',JSON.stringify(d));console.log('wrote',d.skills.length,'skills to data/skills-index.json');\"",
+    "crawl:extended": "tsx scripts/crawl-extended.ts",
+    "crawl:comprehensive": "tsx scripts/crawl-comprehensive.ts",
+    "categorize": "tsx scripts/categorize-skills.ts"
   },
   "dependencies": {
     "next": "16.2.4",

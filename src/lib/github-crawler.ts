@@ -90,7 +90,7 @@ async function githubFetch<T>(url: string, retries = 2): Promise<T> {
 // ─── Interfaces ────────────────────────────────────────────────────────────
 
 /** Normalised pointer to a SKILL.md file, usable from both search and tree APIs */
-interface SkillRef {
+export interface SkillRef {
   sha: string;
   path: string;
   repoFullName: string;
@@ -224,7 +224,7 @@ async function searchWithPagination(query: string, maxPages = 5): Promise<SkillR
 
 // ─── Trees API ─────────────────────────────────────────────────────────────
 
-async function crawlRepoTree(fullName: string): Promise<SkillRef[]> {
+export async function crawlRepoTree(fullName: string): Promise<SkillRef[]> {
   for (const branch of ["main", "master", "HEAD"]) {
     try {
       const tree = await githubFetch<RepoTree>(
@@ -256,7 +256,7 @@ async function crawlRepoTree(fullName: string): Promise<SkillRef[]> {
 
 // ─── Per-skill processing ──────────────────────────────────────────────────
 
-async function processSkillRef(ref: SkillRef): Promise<Skill | null> {
+export async function processSkillRef(ref: SkillRef): Promise<Skill | null> {
   // Raw content (raw.githubusercontent.com — not counted against API rate limit)
   let rawContent: string;
   try {
@@ -304,11 +304,11 @@ async function processSkillRef(ref: SkillRef): Promise<Skill | null> {
 // ─── Dedup helpers ─────────────────────────────────────────────────────────
 
 /** Stable key = repoUrl + file path within repo (branch-agnostic) */
-function skillKey(repoHtmlUrl: string, filePath: string): string {
+export function skillKey(repoHtmlUrl: string, filePath: string): string {
   return `${repoHtmlUrl}::${filePath}`;
 }
 
-function rawUrlToPath(rawUrl: string): string {
+export function rawUrlToPath(rawUrl: string): string {
   const m = rawUrl.match(/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/]+\/(.+)$/);
   return m ? m[1] : rawUrl;
 }

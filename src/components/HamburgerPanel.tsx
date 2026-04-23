@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import type { CategoryStat } from "@/lib/search";
 
 const NAV_ITEMS = [
   { icon: "🏠", label: "ホーム", desc: "スキルを検索", href: "/" },
@@ -16,10 +17,21 @@ export default function HamburgerPanel({
   open: boolean;
   onClose: () => void;
 }) {
+  const [topCategories, setTopCategories] = useState<CategoryStat[]>([]);
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  useEffect(() => {
+    if (open && topCategories.length === 0) {
+      fetch("/api/home-stats")
+        .then((r) => r.json())
+        .then((data: { categories: CategoryStat[] }) => setTopCategories(data.categories.slice(0, 8)))
+        .catch(() => {});
+    }
+  }, [open, topCategories.length]);
 
   return (
     <>
@@ -45,24 +57,6 @@ export default function HamburgerPanel({
         </div>
 
         <div className="flex-1 space-y-8 overflow-y-auto px-5 py-6">
-          {/* About section */}
-          <section>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
-              Skillsとは？
-            </h2>
-            <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">AIエージェントスキルとは</h3>
-            <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-              Skills（SKILL.md）は、AIエージェント（Claude Code、Cursor、Codexなど）に特定の能力を追加するための設定ファイルです。プログラマーが作成したスキルをインストールすることで、AIがコードレビュー、テスト作成、ドキュメント生成などを自動で行えるようになります。
-            </p>
-            <Link
-              href="/about"
-              onClick={onClose}
-              className="mt-2 inline-block text-sm text-indigo-500 hover:underline dark:text-indigo-400"
-            >
-              詳しく見る →
-            </Link>
-          </section>
-
           {/* Navigation */}
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -87,6 +81,60 @@ export default function HamburgerPanel({
                 </li>
               ))}
             </ul>
+          </section>
+
+          {/* Popular categories */}
+          {topCategories.length > 0 && (
+            <section>
+              <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                人気カテゴリ
+              </h2>
+              <ul className="space-y-1">
+                {topCategories.map((cat) => (
+                  <li key={cat.name}>
+                    <Link
+                      href={`/search?category=${encodeURIComponent(cat.name)}`}
+                      onClick={onClose}
+                      className="group flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span>{cat.icon}</span>
+                        <span className="text-sm text-gray-700 group-hover:text-indigo-600 dark:text-gray-300 dark:group-hover:text-indigo-400">
+                          {cat.name}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                        {cat.count.toLocaleString()}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/categories"
+                onClick={onClose}
+                className="mt-2 block text-center text-xs text-indigo-500 hover:underline dark:text-indigo-400"
+              >
+                すべてのカテゴリ →
+              </Link>
+            </section>
+          )}
+
+          {/* About */}
+          <section>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+              Skillsとは？
+            </h2>
+            <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              Skills（SKILL.md）は、AIエージェント（Claude Code、Cursor、Codexなど）に特定の能力を追加するための設定ファイルです。
+            </p>
+            <Link
+              href="/about"
+              onClick={onClose}
+              className="mt-2 inline-block text-sm text-indigo-500 hover:underline dark:text-indigo-400"
+            >
+              詳しく見る →
+            </Link>
           </section>
 
           {/* Links */}

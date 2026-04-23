@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { findSkillById } from "@/lib/search";
+import { findSkillById, getRelatedSkills } from "@/lib/search";
 import CopyButton from "@/components/CopyButton";
 import DescriptionToggle from "@/components/DescriptionToggle";
 import ContentTranslate from "@/components/ContentTranslate";
 import type { Metadata } from "next";
+import { CATEGORY_MAP } from "@/lib/categories";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -42,7 +43,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-
 export default async function SkillDetailPage({ params }: Props) {
   const { id } = await params;
   const skill = await findSkillById(id);
@@ -59,6 +59,9 @@ export default async function SkillDetailPage({ params }: Props) {
   const tools = detectTools(
     `${skill.name} ${skill.description ?? ""} ${fullContent} ${skill.rawUrl}`
   );
+
+  const related = await getRelatedSkills(skill, 5);
+  const catDef = skill.category ? CATEGORY_MAP.get(skill.category) : null;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -90,6 +93,27 @@ export default async function SkillDetailPage({ params }: Props) {
             {t}
           </span>
         ))}
+
+        {/* Category badge */}
+        {skill.category && (
+          <Link
+            href={`/search?category=${encodeURIComponent(skill.category)}`}
+            className="rounded border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600 transition-colors hover:bg-indigo-100 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20"
+          >
+            {catDef?.icon ?? "📦"} {skill.category}
+          </Link>
+        )}
+
+        {/* Subcategory badge */}
+        {skill.category && skill.subcategory && (
+          <Link
+            href={`/search?category=${encodeURIComponent(skill.category)}&subcategory=${encodeURIComponent(skill.subcategory)}`}
+            className="rounded border border-purple-200 bg-purple-50 px-2 py-0.5 text-xs text-purple-600 transition-colors hover:bg-purple-100 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20"
+          >
+            {skill.subcategory}
+          </Link>
+        )}
+
         {skill.categories.map((c) => (
           <Link key={c} href={`/search?q=${encodeURIComponent(c)}`}
             className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs text-gray-500 transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-400 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400">
@@ -136,6 +160,49 @@ export default async function SkillDetailPage({ params }: Props) {
           Raw を見る
         </a>
       </div>
+
+      {/* Related skills */}
+      {related.length > 0 && (
+        <div className="mt-12">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+            関連スキル
+            {skill.category && (
+              <span className="ml-2 text-sm font-normal text-gray-400">
+                ({catDef?.icon} {skill.category})
+              </span>
+            )}
+          </h2>
+          <div className="space-y-2">
+            {related.map((s) => (
+              <Link
+                key={s.id}
+                href={`/skills/${s.id}`}
+                className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:border-indigo-300 hover:bg-indigo-50 dark:border-white/10 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/5"
+              >
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                    {s.name}
+                  </div>
+                  <div className="mt-0.5 truncate text-xs text-gray-400 dark:text-gray-500">
+                    {s.description?.slice(0, 80)}
+                  </div>
+                </div>
+                <div className="ml-4 shrink-0 text-xs text-gray-400">★{s.stars}</div>
+              </Link>
+            ))}
+          </div>
+          {skill.category && (
+            <div className="mt-4 text-center">
+              <Link
+                href={`/search?category=${encodeURIComponent(skill.category)}`}
+                className="text-sm text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                {skill.category} のスキルをもっと見る →
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
