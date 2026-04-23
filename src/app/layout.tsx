@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="ja" className={`h-full ${orbitron.variable}`}>
       <head>
         {/* Prevent flash of unstyled content on dark mode */}
-        <script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('skillsearch_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('skillsearch_theme');if(t!=='light')document.documentElement.classList.add('dark')}catch(e){}` }} />
       </head>
       <body
         className={`${notoSansJP.className} min-h-full flex flex-col bg-white text-gray-900 antialiased dark:bg-[#0a0a0a] dark:text-white`}

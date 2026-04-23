@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { findSkillById } from "@/lib/search";
 import CopyButton from "@/components/CopyButton";
+import DescriptionToggle from "@/components/DescriptionToggle";
 import type { Metadata } from "next";
 import type { Components } from "react-markdown";
 
@@ -182,7 +183,10 @@ export default async function SkillDetailPage({ params }: Props) {
       </div>
 
       {skill.description && skill.description !== skill.content && (
-        <p className="mt-4 leading-relaxed text-gray-500 dark:text-gray-400">{skill.description}</p>
+        <DescriptionToggle
+          description={skill.description}
+          className="mt-4 leading-relaxed text-gray-500 dark:text-gray-400"
+        />
       )}
 
       {skill.installCommand && (

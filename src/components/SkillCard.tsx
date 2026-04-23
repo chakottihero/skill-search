@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Skill } from "@/lib/types";
 import CopyButton from "./CopyButton";
+import DescriptionToggle from "./DescriptionToggle";
 
 const TOOL_KEYWORDS: { label: string; keywords: string[] }[] = [
   { label: "Claude Code", keywords: ["claude code", "claude", ".claude"] },
@@ -47,9 +48,10 @@ export default function SkillCard({ skill }: { skill: Skill }) {
         {skill.repoUrl}
       </a>
 
-      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-        {skill.description || skill.content || "説明なし"}
-      </p>
+      <DescriptionToggle
+        description={skill.description || skill.content || "説明なし"}
+        className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+      />
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
         <span className="flex items-center gap-1">

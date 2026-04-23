@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 const NAV_ITEMS = [
-  { icon: "🏠", label: "ホーム", href: "/" },
-  { icon: "🔍", label: "検索", href: "/search" },
-  { icon: "📂", label: "カテゴリ", href: "/categories" },
-  { icon: "📤", label: "出品する", href: "/submit" },
+  { icon: "🏠", label: "ホーム", desc: "スキルを検索", href: "/" },
+  { icon: "🔍", label: "検索", desc: "キーワードで探す", href: "/search" },
+  { icon: "📂", label: "カテゴリ", desc: "分野別に探す", href: "/categories" },
+  { icon: "📤", label: "出品する", desc: "スキルを公開", href: "/submit" },
 ];
 
 export default function HamburgerPanel({
@@ -45,6 +45,7 @@ export default function HamburgerPanel({
         </div>
 
         <div className="flex-1 space-y-8 overflow-y-auto px-5 py-6">
+          {/* About section */}
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
               Skillsとは？
@@ -62,26 +63,33 @@ export default function HamburgerPanel({
             </Link>
           </section>
 
+          {/* Navigation */}
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
               ナビゲーション
             </h2>
             <ul className="space-y-1">
-              {NAV_ITEMS.map(({ icon, label, href }) => (
+              {NAV_ITEMS.map(({ icon, label, desc, href }) => (
                 <li key={href}>
                   <Link
                     href={href}
                     onClick={onClose}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-indigo-400"
+                    className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
                   >
-                    <span className="text-base">{icon}</span>
-                    {label}
+                    <span className="text-xl">{icon}</span>
+                    <div>
+                      <div className="text-sm font-medium text-gray-700 transition-colors group-hover:text-indigo-600 dark:text-gray-200 dark:group-hover:text-indigo-400">
+                        {label}
+                      </div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500">{desc}</div>
+                    </div>
                   </Link>
                 </li>
               ))}
             </ul>
           </section>
 
+          {/* Links */}
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
               リンク

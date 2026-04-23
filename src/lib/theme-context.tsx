@@ -5,16 +5,16 @@ export type Theme = "light" | "dark";
 const LS_KEY = "skillsearch_theme";
 
 const Ctx = createContext<{ theme: Theme; setTheme: (t: Theme) => void }>({
-  theme: "light",
+  theme: "dark",
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>("dark");
 
   useEffect(() => {
     const saved = localStorage.getItem(LS_KEY) as Theme | null;
-    const t = saved === "dark" ? "dark" : "light";
+    const t = saved === "light" ? "light" : "dark";
     setThemeState(t);
     document.documentElement.classList.toggle("dark", t === "dark");
   }, []);
