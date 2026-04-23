@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 const CATEGORIES = {
@@ -16,13 +15,6 @@ const T = {
   en: { placeholder: "Search skills...", searchBtn: "Search Skills", luckyBtn: "I'm Feeling Lucky" },
   zh: { placeholder: "Search skills...", searchBtn: "搜索技能", luckyBtn: "手气不错" },
 };
-
-const QUICK_NAV = [
-  { icon: "🔍", label: "キーワード検索", action: "focus" as const },
-  { icon: "📂", label: "カテゴリから探す", href: "/categories" },
-  { icon: "⭐", label: "人気スキル", href: "/search?sort=stars" },
-  { icon: "📤", label: "スキルを出品", href: "/submit" },
-];
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -43,45 +35,25 @@ export default function Home() {
 
   const handleCategory = (cat: string) => {
     setQuery((prev) => (prev.trim() ? `${prev.trim()} ${cat}` : cat));
+    inputRef.current?.focus();
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-120px)] flex-col items-center justify-center px-4">
+    <div className="flex min-h-[calc(100vh-140px)] flex-col items-center justify-center px-4">
       <div className="flex w-full max-w-2xl flex-col items-center gap-8">
         {/* Logo */}
         <div className="text-center">
-          <h1 className="font-orbitron whitespace-nowrap text-4xl font-bold text-indigo-600 tracking-tight dark:text-indigo-400 sm:text-5xl md:text-6xl lg:text-7xl">
-            Skills リサーチ
+          <h1 className="whitespace-nowrap leading-none text-indigo-600 dark:text-indigo-400">
+            <span className="font-orbitron font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+              Skills{" "}
+            </span>
+            <span className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+              リサーチ
+            </span>
           </h1>
-          <p className="mt-3 text-base text-gray-400 tracking-[0.2em] sm:text-lg">
+          <p className="mt-4 text-base text-gray-400 tracking-[0.2em] sm:text-lg md:text-xl">
             Skills Research
           </p>
-        </div>
-
-        {/* Quick nav cards */}
-        <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
-          {QUICK_NAV.map((item) =>
-            item.action === "focus" ? (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => inputRef.current?.focus()}
-                className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-center text-gray-600 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/5"
-              >
-                <span className="text-xl">{item.icon}</span>
-                <span className="text-xs font-medium">{item.label}</span>
-              </button>
-            ) : (
-              <Link
-                key={item.label}
-                href={item.href!}
-                className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-center text-gray-600 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-500/5"
-              >
-                <span className="text-xl">{item.icon}</span>
-                <span className="text-xs font-medium">{item.label}</span>
-              </Link>
-            )
-          )}
         </div>
 
         {/* Search form */}

@@ -120,27 +120,27 @@ export default function Header() {
         </div>
 
         {/* Row 2: Nav links */}
-        <div className="border-b border-gray-200 px-4 py-1.5 dark:border-gray-800 sm:px-6">
+        <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
           <div className="mx-auto flex max-w-6xl justify-center">
-            {/* PC: gap-6 text-sm */}
-            <nav className="hidden items-center gap-6 md:flex">
+            {/* PC: gap-8 text-sm */}
+            <nav className="hidden items-center gap-8 md:flex">
               {navItems.map(({ href, full }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`text-sm transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
+                  className={`py-2 text-sm transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
                 >
                   {full}
                 </Link>
               ))}
             </nav>
-            {/* Mobile: gap-4 text-xs */}
-            <nav className="flex items-center gap-4 md:hidden">
+            {/* Mobile: gap-6 text-xs */}
+            <nav className="flex items-center gap-6 md:hidden">
               {navItems.map(({ href, short }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`text-xs transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
+                  className={`py-2 text-xs transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
                 >
                   {short}
                 </Link>
