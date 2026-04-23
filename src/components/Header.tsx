@@ -1,14 +1,15 @@
 "use client";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useLanguage, type Lang } from "@/context/LanguageContext";
 import { useTheme } from "@/lib/theme-context";
 import HamburgerPanel from "./HamburgerPanel";
 
 const T = {
-  ja: { home: "ホーム", categories: "カテゴリ", submit: "出品する", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
-  en: { home: "Home", categories: "Categories", submit: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark" },
-  zh: { home: "首页", categories: "分类", submit: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色" },
+  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品する", submitShort: "出品", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
+  en: { home: "Home", search: "Search", categories: "Categories", submit: "Submit", submitShort: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark" },
+  zh: { home: "首页", search: "搜索", categories: "分类", submit: "提交", submitShort: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色" },
 } as const;
 
 const LANG_NAMES: Record<Lang, string> = { ja: "日本語", en: "English", zh: "中文" };
@@ -19,6 +20,7 @@ export default function Header() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const t = T[lang];
 
   useEffect(() => {
@@ -31,33 +33,35 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const navItems = [
+    { href: "/", full: t.home, short: t.home },
+    { href: "/search", full: t.search, short: t.search },
+    { href: "/categories", full: t.categories, short: t.categories },
+    { href: "/submit", full: t.submit, short: t.submitShort },
+  ];
+
   return (
     <>
-      <header className="border-b border-gray-200 bg-white px-4 py-4 dark:border-white/10 dark:bg-[#0a0a0a] sm:px-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          <button
-            onClick={() => setPanelOpen(true)}
-            className="flex-shrink-0 text-2xl text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            aria-label="メニュー"
-          >
-            ☰
-          </button>
-
-          <Link
-            href="/"
-            className="font-orbitron whitespace-nowrap text-lg font-bold text-indigo-600 tracking-tight dark:text-indigo-400 sm:text-xl"
-          >
-            Skills リサーチ
-          </Link>
-
-          <nav className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 sm:gap-6">
-            <Link href="/" className="hidden transition-colors hover:text-gray-900 dark:hover:text-white md:block">{t.home}</Link>
-            <Link href="/categories" className="hidden transition-colors hover:text-gray-900 dark:hover:text-white md:block">{t.categories}</Link>
-            <Link
-              href="/submit"
-              className="hidden rounded-full border border-indigo-500 px-4 py-1.5 text-indigo-500 transition-colors hover:bg-indigo-500 hover:text-white dark:text-indigo-400 sm:block"
+      <header className="bg-white dark:bg-[#0a0a0a]">
+        {/* Row 1: ☰ | Logo | ⚙ */}
+        <div className="border-b border-gray-100 px-4 py-4 dark:border-white/5 sm:px-6">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+            <button
+              onClick={() => setPanelOpen(true)}
+              className="flex-shrink-0 text-2xl text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              aria-label="メニュー"
             >
-              {t.submit}
+              ☰
+            </button>
+
+            <Link
+              href="/"
+              className="font-orbitron whitespace-nowrap text-lg font-bold text-indigo-600 tracking-tight dark:text-indigo-400 sm:text-xl"
+            >
+              Skills リサーチ
             </Link>
 
             <div ref={settingsRef} className="relative">
@@ -112,7 +116,37 @@ export default function Header() {
                 </div>
               )}
             </div>
-          </nav>
+          </div>
+        </div>
+
+        {/* Row 2: Nav links */}
+        <div className="border-b border-gray-200 px-4 py-1.5 dark:border-gray-800 sm:px-6">
+          <div className="mx-auto flex max-w-6xl justify-center">
+            {/* PC: gap-6 text-sm */}
+            <nav className="hidden items-center gap-6 md:flex">
+              {navItems.map(({ href, full }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`text-sm transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
+                >
+                  {full}
+                </Link>
+              ))}
+            </nav>
+            {/* Mobile: gap-4 text-xs */}
+            <nav className="flex items-center gap-4 md:hidden">
+              {navItems.map(({ href, short }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`text-xs transition-colors hover:text-indigo-400 ${isActive(href) ? "font-medium text-indigo-400" : "text-gray-400"}`}
+                >
+                  {short}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 

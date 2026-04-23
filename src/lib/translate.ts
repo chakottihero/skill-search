@@ -10,3 +10,18 @@ export function detectLanguage(text: string): "ja" | "zh" | "en" | "other" {
 export function getCacheKey(text: string, targetLang: string): string {
   return `translate_${targetLang}_${text.slice(0, 50)}`;
 }
+
+export async function translateText(text: string, targetLang: string): Promise<string> {
+  const langMap: Record<string, string> = { ja: "ja", en: "en", zh: "zh-CN" };
+  const tl = langMap[targetLang] || targetLang;
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (data[0] as any[][]).map((item) => item[0]).join("");
+  } catch (error) {
+    console.error("Translation failed:", error);
+    return text;
+  }
+}
