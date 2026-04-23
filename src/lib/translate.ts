@@ -22,12 +22,17 @@ function simpleHash(str: string): string {
 }
 
 async function translateSingle(text: string, tl: string): Promise<string> {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
+  const langReverseMap: Record<string, string> = { ja: "ja", en: "en", "zh-CN": "zh" };
+  const targetLang = langReverseMap[tl] || tl;
   try {
-    const res = await fetch(url);
+    const res = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, targetLang }),
+    });
+    if (!res.ok) return text;
     const data = await res.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (data[0] as any[][]).map((item) => item[0]).join("");
+    return data.translated ?? text;
   } catch (error) {
     console.error("Translation failed:", error);
     return text;
@@ -35,8 +40,7 @@ async function translateSingle(text: string, tl: string): Promise<string> {
 }
 
 export async function translateText(text: string, targetLang: string): Promise<string> {
-  const langMap: Record<string, string> = { ja: "ja", en: "en", zh: "zh-CN" };
-  return translateSingle(text, langMap[targetLang] || targetLang);
+  return translateSingle(text, targetLang);
 }
 
 export async function translateLongText(
@@ -44,8 +48,7 @@ export async function translateLongText(
   targetLang: string,
   onProgress?: (current: number, total: number) => void
 ): Promise<string> {
-  const langMap: Record<string, string> = { ja: "ja", en: "en", zh: "zh-CN" };
-  const tl = langMap[targetLang] || targetLang;
+  const tl = targetLang;
 
   const paragraphs = text.split(/\n\n+/);
   const translatedParts: string[] = [];
