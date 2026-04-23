@@ -1,1 +1,6 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+.font-orbitron {
+  font-family: var(--font-orbitron), ui-monospace, monospace;
+}

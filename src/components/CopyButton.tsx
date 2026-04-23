@@ -14,9 +14,9 @@ export default function CopyButton({ command }: { command: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs transition-colors hover:border-green-500/50 hover:text-green-400"
+      className="flex items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400"
     >
-      <code className="font-mono text-gray-400 truncate max-w-xs">{command}</code>
+      <code className="max-w-xs truncate font-mono text-gray-500 dark:text-gray-400">{command}</code>
       <span className="shrink-0 text-gray-400">
         {copied ? "✓ コピー済み" : "インストール"}
       </span>
