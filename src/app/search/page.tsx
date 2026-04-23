@@ -107,8 +107,8 @@ export default async function SearchPage({ searchParams }: Props) {
       ) : (
         <>
           <div className="divide-y divide-gray-100 dark:divide-white/[0.08]">
-            {skills.map((skill) => (
-              <SkillCard key={skill.id} skill={skill} />
+            {skills.map((skill, i) => (
+              <SkillCard key={skill.id} skill={skill} index={i} />
             ))}
           </div>
 

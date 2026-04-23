@@ -27,7 +27,7 @@ function formatDate(iso: string): string {
   return `${Math.floor(days / 365)}年前`;
 }
 
-export default function SkillCard({ skill }: { skill: Skill }) {
+export default function SkillCard({ skill, index = 0 }: { skill: Skill; index?: number }) {
   const tools = detectTools(skill);
 
   return (
@@ -51,6 +51,7 @@ export default function SkillCard({ skill }: { skill: Skill }) {
       <DescriptionToggle
         description={skill.description || skill.content || "説明なし"}
         className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+        index={index}
       />
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-400 dark:text-gray-500">

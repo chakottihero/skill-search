@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage, type Lang } from "@/context/LanguageContext";
 import { detectLanguage, getCacheKey, translateText } from "@/lib/translate";
 
@@ -8,9 +8,11 @@ const LANG_NAMES: Record<Lang, string> = { ja: "日本語", en: "English", zh: "
 export default function DescriptionToggle({
   description,
   className,
+  index = 0,
 }: {
   description: string;
   className?: string;
+  index?: number;
 }) {
   const { lang } = useLanguage();
   const [showTranslated, setShowTranslated] = useState(false);
@@ -19,6 +21,43 @@ export default function DescriptionToggle({
 
   const detectedLang = detectLanguage(description);
   const needsTranslation = detectedLang !== "other" && detectedLang !== lang;
+
+  useEffect(() => {
+    setTranslatedText(null);
+    setShowTranslated(false);
+    setLoading(false);
+
+    if (!needsTranslation) return;
+
+    let cancelled = false;
+
+    const doTranslate = async () => {
+      const cacheKey = getCacheKey(description, lang);
+      const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
+      if (cached && cached !== description) {
+        if (!cancelled) {
+          setTranslatedText(cached);
+          setShowTranslated(true);
+        }
+        return;
+      }
+      if (!cancelled) setLoading(true);
+      const result = await translateText(description, lang);
+      if (cancelled) return;
+      setLoading(false);
+      if (result && result !== description) {
+        setTranslatedText(result);
+        if (typeof window !== "undefined") localStorage.setItem(cacheKey, result);
+        setShowTranslated(true);
+      }
+    };
+
+    const timer = setTimeout(doTranslate, index * 200);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [description, lang, needsTranslation, index]);
 
   if (!needsTranslation) {
     return <p className={className}>{description}</p>;
@@ -34,6 +73,7 @@ export default function DescriptionToggle({
       setShowTranslated(true);
       return;
     }
+    // Fallback: manual translate if auto-translate hasn't finished
     const cacheKey = getCacheKey(description, lang);
     const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
     if (cached && cached !== description) {
@@ -47,27 +87,27 @@ export default function DescriptionToggle({
     if (result && result !== description) {
       setTranslatedText(result);
       if (typeof window !== "undefined") localStorage.setItem(cacheKey, result);
+      setShowTranslated(true);
     }
-    setShowTranslated(true);
   };
 
   const displayText = showTranslated && translatedText ? translatedText : description;
-  const buttonText = loading
-    ? "翻訳中..."
-    : showTranslated
-    ? "原文に戻す"
-    : `${LANG_NAMES[lang] ?? lang}に翻訳`;
 
   return (
     <div className="relative">
-      <p className={`${className ?? ""} pr-20`}>{displayText}</p>
-      <button
-        onClick={handleClick}
-        disabled={loading}
-        className="absolute right-0 top-0 cursor-pointer whitespace-nowrap text-xs text-indigo-400 hover:underline disabled:opacity-50 disabled:cursor-wait"
-      >
-        {buttonText}
-      </button>
+      {loading ? (
+        <p className={`${className ?? ""} pr-20 opacity-40`}>翻訳中...</p>
+      ) : (
+        <p className={`${className ?? ""} pr-20`}>{displayText}</p>
+      )}
+      {!loading && (
+        <button
+          onClick={handleClick}
+          className="absolute right-0 top-0 cursor-pointer whitespace-nowrap text-xs text-indigo-400 hover:underline"
+        >
+          {showTranslated ? "原文に戻す" : `${LANG_NAMES[lang] ?? lang}に翻訳`}
+        </button>
+      )}
     </div>
   );
 }
