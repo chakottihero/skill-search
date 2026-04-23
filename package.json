@@ -1,0 +1,35 @@
+{
+  "name": "skill-search",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "crawl": "tsx scripts/crawl.ts",
+    "crawl:full": "tsx scripts/crawl.ts",
+    "crawl:update": "tsx scripts/crawl.ts --update",
+    "build:data": "node -e \"const fs=require('fs');const d=JSON.parse(fs.readFileSync('data/skills.json','utf-8'));d.skills=d.skills.map(({content,...s})=>s);fs.writeFileSync('data/skills-index.json',JSON.stringify(d));console.log('wrote',d.skills.length,'skills to data/skills-index.json');\""
+  },
+  "dependencies": {
+    "next": "16.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,56 @@
+name: Crawl SKILL.md
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # UTC 0:00 daily
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Crawl mode"
+        required: false
+        default: "update"
+        type: choice
+        options: [update, full]
+
+# Need write access to push data/skills.json
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run crawler
+        env:
+          # Create a PAT at https://github.com/settings/tokens
+          # with scope: public_repo (read:org is not required)
+          # and add it as repository secret SKILL_SEARCH_TOKEN
+          GITHUB_TOKEN: ${{ secrets.SKILL_SEARCH_TOKEN }}
+        run: |
+          MODE="${{ github.event.inputs.mode || 'update' }}"
+          if [ "$MODE" = "full" ]; then
+            npm run crawl:full
+          else
+            npm run crawl:update
+          fi
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/skills.json data/crawl-log.json
+          git diff --staged --quiet \
+            || git commit -m "chore: update skills data [$(date -u +%Y-%m-%d)]"
+          git push
