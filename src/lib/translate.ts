@@ -83,18 +83,23 @@ export async function translateLongText(
     return `__CODE_${codeBlocks.length - 1}__`;
   });
 
-  const paragraphs = protectedText.split(/\n\n+/);
+  // Split at blank lines AND at the start of heading lines (handles SKILL.md
+  // files where headings have no preceding blank line)
+  const paragraphs = protectedText
+    .split(/\n(?=#{1,6} )/g)
+    .flatMap((p) => p.split(/\n\n+/))
+    .filter((p) => p.trim() !== "");
 
+  // Only skip code-block placeholders and truly empty segments
   const isSkippable = (p: string) =>
-    p.trim() === "" ||
-    p.startsWith("__CODE_") ||
-    p.startsWith("|") ||
-    /^https?:\/\//.test(p);
+    p.trim() === "" || p.includes("__CODE_");
 
   const translatableIndices = paragraphs
     .map((p, i) => ({ p, i }))
     .filter(({ p }) => !isSkippable(p))
     .map(({ i }) => i);
+
+  console.log(`翻訳対象段落数: ${translatableIndices.length} / ${paragraphs.length}`);
 
   const results: string[] = [...paragraphs];
 
