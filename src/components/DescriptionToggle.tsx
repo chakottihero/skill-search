@@ -20,7 +20,9 @@ export default function DescriptionToggle({
   const [loading, setLoading] = useState(false);
 
   const detectedLang = detectLanguage(description);
-  const needsTranslation = detectedLang !== "other" && detectedLang !== lang;
+  // "other" = likely English with emojis/special chars; treat as "en"
+  const effectiveLang = detectedLang === "other" ? "en" : detectedLang;
+  const needsTranslation = effectiveLang !== lang;
 
   useEffect(() => {
     setTranslatedText(null);

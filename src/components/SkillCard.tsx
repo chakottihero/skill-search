@@ -51,7 +51,7 @@ export default function SkillCard({ skill, index = 0 }: { skill: Skill; index?: 
       </a>
 
       <DescriptionToggle
-        description={skill.description || skill.content || "説明なし"}
+        description={skill.description?.trim() || skill.content?.trim() || skill.name}
         className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
         index={index}
       />
