@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const langMap: Record<string, string> = { ja: "ja", en: "en", zh: "zh-CN" };
     const tl = langMap[targetLang] || targetLang;
 
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(text.slice(0, 4500))}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(text.slice(0, 1500))}`;
 
     const response = await fetch(url, {
       headers: {
