@@ -293,7 +293,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         name: "会計・経理",
-        keywords: ["accounting", "invoice", "expense", "会計", "経理", "budget", "finance", "tax"],
+        keywords: ["accounting", "invoice", "expense", "会計", "経理", "budget", "bookkeeping", "tax", "payroll"],
       },
       {
         name: "マーケティング",
@@ -403,6 +403,125 @@ export const CATEGORIES: Category[] = [
       {
         name: "C/C++",
         keywords: ["c++", "cpp", "cmake", "clang", "gcc", "c language", "llvm"],
+      },
+    ],
+  },
+  {
+    name: "化学・生命科学",
+    icon: "🧬",
+    keywords: ["molecular", "protein", "bioinformatics", "genomics", "docking", "ligand", "chemistry", "biology", "sequencing", "rna", "dna", "cell"],
+    subcategories: [
+      {
+        name: "バイオインフォマティクス",
+        keywords: ["bioinformatics", "genomics", "sequencing", "rna-seq", "dna", "blast", "fasta", "bam", "vcf"],
+      },
+      {
+        name: "タンパク質・分子設計",
+        keywords: ["protein", "molecular", "docking", "ligand", "alphafold", "rosetta", "pdb", "structure"],
+      },
+      {
+        name: "化学計算",
+        keywords: ["chemistry", "chemical", "rdkit", "smiles", "mol", "reaction", "compound", "simulation"],
+      },
+      {
+        name: "細胞・生物学",
+        keywords: ["cell", "biology", "microscopy", "organism", "gene", "crispr", "phenotype"],
+      },
+    ],
+  },
+  {
+    name: "医療・ヘルスケア",
+    icon: "🏥",
+    keywords: ["medical", "health", "clinical", "diagnosis", "patient", "drug", "ehr", "fhir", "hospital"],
+    subcategories: [
+      {
+        name: "診断支援",
+        keywords: ["diagnosis", "diagnostic", "symptom", "disease", "condition", "medical image", "radiology"],
+      },
+      {
+        name: "電子カルテ・HL7",
+        keywords: ["ehr", "fhir", "hl7", "epic", "patient record", "clinical note", "医療記録"],
+      },
+      {
+        name: "医薬品・治療",
+        keywords: ["drug", "medication", "treatment", "prescription", "pharmacy", "clinical trial"],
+      },
+      {
+        name: "ヘルスケアアプリ",
+        keywords: ["health", "wellness", "fitness", "nutrition", "wearable", "sleep", "mental health"],
+      },
+    ],
+  },
+  {
+    name: "数学・物理",
+    icon: "🔢",
+    keywords: ["numerical", "simulation", "physics", "mathematical", "optimization", "differential", "linear algebra", "signal"],
+    subcategories: [
+      {
+        name: "数値計算・シミュレーション",
+        keywords: ["numerical", "simulation", "finite element", "cfd", "monte carlo", "differential equation", "solver"],
+      },
+      {
+        name: "最適化",
+        keywords: ["optimization", "minimization", "gradient", "genetic algorithm", "scipy", "convex"],
+      },
+      {
+        name: "物理・工学",
+        keywords: ["physics", "mechanics", "thermodynamics", "electromagnetism", "signal processing", "control"],
+      },
+      {
+        name: "線形代数・行列",
+        keywords: ["linear algebra", "matrix", "eigenvalue", "svd", "numpy linalg", "tensor"],
+      },
+    ],
+  },
+  {
+    name: "法律・コンプライアンス",
+    icon: "⚖️",
+    keywords: ["legal", "contract", "regulatory", "compliance", "law", "gdpr", "privacy", "policy", "terms"],
+    subcategories: [
+      {
+        name: "契約書・法文書",
+        keywords: ["contract", "agreement", "legal document", "clause", "terms", "nda", "sla", "法律文書"],
+      },
+      {
+        name: "規制・コンプライアンス",
+        keywords: ["regulatory", "compliance", "gdpr", "ccpa", "hipaa", "regulation", "法令", "コンプライアンス"],
+      },
+      {
+        name: "プライバシー",
+        keywords: ["privacy", "data protection", "personal data", "cookie", "consent", "プライバシー"],
+      },
+      {
+        name: "知的財産",
+        keywords: ["patent", "copyright", "trademark", "ip", "license", "intellectual property", "特許"],
+      },
+    ],
+  },
+  {
+    name: "金融・経済",
+    icon: "💰",
+    keywords: ["finance", "stock", "trading", "investment", "crypto", "blockchain", "accounting", "risk", "economic"],
+    subcategories: [
+      {
+        name: "株式・投資分析",
+        keywords: ["stock", "equity", "investment", "portfolio", "backtest", "technical analysis", "fundamental", "株式"],
+      },
+      {
+        name: "暗号通貨",
+        keywords: ["crypto", "bitcoin", "ethereum", "blockchain", "defi", "web3", "wallet", "nft", "solidity"],
+      },
+      {
+        name: "リスク管理",
+        keywords: ["risk", "var", "volatility", "hedge", "exposure", "risk management", "リスク"],
+      },
+      {
+        name: "会計・財務",
+        keywords: ["accounting", "financial statement", "balance sheet", "cash flow", "gaap", "ifrs", "決算", "財務"],
+      },
+      {
+        name: "トレーディング",
+        keywords: ["trading", "algo trading", "quant", "strategy", "execution", "market data", "order", "トレード"],
       },
     ],
   },
