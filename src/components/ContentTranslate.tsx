@@ -101,15 +101,20 @@ export default function ContentTranslate({
     const fullKey = cacheKey ? `tr2_full_${lang}_${cacheKey}` : null;
 
     const doTranslate = async () => {
-      // Try full-content cache first
+      // Try full-content cache, but reject stale entries from old batch system
       if (fullKey && typeof window !== "undefined") {
         const cached = localStorage.getItem(fullKey);
         if (cached) {
-          if (!cancelled) {
-            setTranslatedContent(cached);
-            setShowTranslated(true);
+          const isStale = cached.includes("|||SPLIT|||") || cached.includes("<<<PART_BREAK>>>");
+          if (isStale) {
+            localStorage.removeItem(fullKey);
+          } else {
+            if (!cancelled) {
+              setTranslatedContent(cached);
+              setShowTranslated(true);
+            }
+            return;
           }
-          return;
         }
       }
 
