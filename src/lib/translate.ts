@@ -46,119 +46,84 @@ export async function translateText(text: string, targetLang: string): Promise<s
 export async function translateLongText(
   text: string,
   targetLang: string,
-  onProgress?: (current: number, total: number) => void
+  onProgress?: (progress: string) => void
 ): Promise<string> {
-  const tl = targetLang;
+  const SEPARATOR = "\n\n|||SPLIT|||\n\n";
 
-  const paragraphs = text.split(/\n\n+/);
-  const translatedParts: string[] = [];
-  const total = paragraphs.length;
+  // Protect code blocks from translation
+  const codeBlocks: string[] = [];
+  const textWithPlaceholders = text.replace(/```[\s\S]*?```/g, (match) => {
+    codeBlocks.push(match);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  });
+
+  const paragraphs = textWithPlaceholders.split(/\n\n+/);
+
+  // Classify each paragraph: needs translation or preserve as-is
+  const needsTranslation = paragraphs.map((p) => {
+    const t = p.trim();
+    if (!t) return false;
+    if (t.includes("__CODE_BLOCK_")) return false;
+    if (t.startsWith("|")) return false;
+    if (/^https?:\/\//.test(t)) return false;
+    if (/^[\s]*[`$#>]/.test(t)) return false;
+    if (/^[\s]*(import |from |const |let |var |function |class |def |if |for |while |return )/.test(t)) return false;
+    return true;
+  });
+
+  // Pack translatable paragraphs into ≤3500-char batches joined by SEPARATOR
+  const batches: { indices: number[]; batchText: string }[] = [];
+  let batchIndices: number[] = [];
+  let batchLength = 0;
 
   for (let i = 0; i < paragraphs.length; i++) {
-    const paragraph = paragraphs[i];
-    const trimmed = paragraph.trim();
-
-    if (!trimmed) {
-      translatedParts.push("");
-      onProgress?.(i + 1, total);
-      continue;
+    if (!needsTranslation[i]) continue;
+    const len = paragraphs[i].length + SEPARATOR.length;
+    if (batchLength + len > 3500 && batchIndices.length > 0) {
+      batches.push({ indices: batchIndices, batchText: batchIndices.map((j) => paragraphs[j]).join(SEPARATOR) });
+      batchIndices = [];
+      batchLength = 0;
     }
-
-    // Code blocks: preserve as-is
-    if (trimmed.startsWith("```")) {
-      translatedParts.push(trimmed);
-      onProgress?.(i + 1, total);
-      continue;
-    }
-
-    // Shell/code-like lines: preserve
-    if (
-      /^[\s]*[`$#>]/.test(trimmed) ||
-      /^[\s]*(import |from |const |let |var |function |class |def |if |for |while |return )/.test(trimmed)
-    ) {
-      translatedParts.push(trimmed);
-      onProgress?.(i + 1, total);
-      continue;
-    }
-
-    // Tables: preserve
-    if (trimmed.startsWith("|")) {
-      translatedParts.push(trimmed);
-      onProgress?.(i + 1, total);
-      continue;
-    }
-
-    // Bare URLs: preserve
-    if (/^https?:\/\//.test(trimmed)) {
-      translatedParts.push(trimmed);
-      onProgress?.(i + 1, total);
-      continue;
-    }
-
-    // Markdown headings: translate the text, keep the # prefix
-    const headingMatch = trimmed.match(/^(#{1,6}\s+)(.*)/);
-    if (headingMatch) {
-      const prefix = headingMatch[1];
-      const headingText = headingMatch[2];
-      const cacheKey = `tr2_${tl}_${simpleHash(headingText)}`;
-      const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
-      if (cached) {
-        translatedParts.push(prefix + cached);
-      } else {
-        const translated = await translateSingle(headingText, tl);
-        if (typeof window !== "undefined") localStorage.setItem(cacheKey, translated);
-        translatedParts.push(prefix + translated);
-      }
-      onProgress?.(i + 1, total);
-      await new Promise((r) => setTimeout(r, 100));
-      continue;
-    }
-
-    // Regular text ≤ 4000 chars
-    if (trimmed.length <= 4000) {
-      const cacheKey = `tr2_${tl}_${simpleHash(trimmed)}`;
-      const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
-      if (cached) {
-        translatedParts.push(cached);
-      } else {
-        const translated = await translateSingle(trimmed, tl);
-        if (typeof window !== "undefined") localStorage.setItem(cacheKey, translated);
-        translatedParts.push(translated);
-        await new Promise((r) => setTimeout(r, 100));
-      }
-    } else {
-      // Split long text into sentence-level chunks
-      const sentences = trimmed.match(/[^。！？.!?\n]+[。！？.!?\n]?/g) ?? [trimmed];
-      let chunk = "";
-      const chunks: string[] = [];
-      for (const s of sentences) {
-        if ((chunk + s).length > 4000) {
-          if (chunk) chunks.push(chunk);
-          chunk = s;
-        } else {
-          chunk += s;
-        }
-      }
-      if (chunk) chunks.push(chunk);
-
-      const translatedChunks: string[] = [];
-      for (const c of chunks) {
-        const cacheKey = `tr2_${tl}_${simpleHash(c)}`;
-        const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
-        if (cached) {
-          translatedChunks.push(cached);
-        } else {
-          const translated = await translateSingle(c, tl);
-          if (typeof window !== "undefined") localStorage.setItem(cacheKey, translated);
-          translatedChunks.push(translated);
-          await new Promise((r) => setTimeout(r, 100));
-        }
-      }
-      translatedParts.push(translatedChunks.join(""));
-    }
-
-    onProgress?.(i + 1, total);
+    batchIndices.push(i);
+    batchLength += len;
+  }
+  if (batchIndices.length > 0) {
+    batches.push({ indices: batchIndices, batchText: batchIndices.map((j) => paragraphs[j]).join(SEPARATOR) });
   }
 
-  return translatedParts.join("\n\n");
+  // Translate each batch (far fewer requests than per-paragraph)
+  const translatedMap: Record<number, string> = {};
+
+  for (let b = 0; b < batches.length; b++) {
+    const { indices, batchText } = batches[b];
+    onProgress?.(`(${b + 1}/${batches.length}バッチ翻訳中)`);
+
+    try {
+      const translated = await translateSingle(batchText, targetLang);
+      const parts = translated.split(/\|\|\|SPLIT\|\|\|/);
+      indices.forEach((originalIdx, partIdx) => {
+        translatedMap[originalIdx] = parts[partIdx]?.trim() ?? paragraphs[originalIdx];
+      });
+    } catch {
+      indices.forEach((originalIdx) => {
+        translatedMap[originalIdx] = paragraphs[originalIdx];
+      });
+    }
+
+    if (b < batches.length - 1) {
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+
+  // Reassemble paragraphs
+  let result = paragraphs
+    .map((p, i) => (translatedMap[i] !== undefined ? translatedMap[i] : p))
+    .join("\n\n");
+
+  // Restore code blocks
+  codeBlocks.forEach((block, i) => {
+    result = result.replace(`__CODE_BLOCK_${i}__`, block);
+  });
+
+  return result;
 }

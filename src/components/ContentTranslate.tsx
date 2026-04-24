@@ -82,7 +82,7 @@ export default function ContentTranslate({
   const [showTranslated, setShowTranslated] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
-  const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [progress, setProgress] = useState("");
 
   const detectedLang = detectLanguage(content);
   // "other" = English content with emojis/special chars; treat as "en" for translation purposes
@@ -93,7 +93,7 @@ export default function ContentTranslate({
     setTranslatedContent(null);
     setShowTranslated(false);
     setTranslating(false);
-    setProgress({ current: 0, total: 0 });
+    setProgress("");
 
     if (!needsTranslation) return;
 
@@ -114,8 +114,8 @@ export default function ContentTranslate({
       }
 
       if (!cancelled) setTranslating(true);
-      const result = await translateLongText(content, lang, (current, total) => {
-        if (!cancelled) setProgress({ current, total });
+      const result = await translateLongText(content, lang, (p) => {
+        if (!cancelled) setProgress(p);
       });
       if (cancelled) return;
 
@@ -140,7 +140,7 @@ export default function ContentTranslate({
         <div className="mb-4 flex items-center justify-end gap-3">
           {translating ? (
             <span className="text-xs text-gray-400">
-              翻訳中... {progress.total > 0 && `(${progress.current}/${progress.total})`}
+              翻訳中... {progress}
             </span>
           ) : (
             <button
