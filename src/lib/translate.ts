@@ -48,83 +48,55 @@ export async function translateLongText(
   targetLang: string,
   onProgress?: (progress: string) => void
 ): Promise<string> {
-  const SEPARATOR = "\n\n<<<PART_BREAK>>>\n\n";
-  // Regex handles the original and any full-width variant Google Translate may produce
-  const SPLIT_RE = /<<<PART_BREAK>>>|＜＜＜PART_BREAK＞＞＞/;
+  const CONCURRENCY = 5;
 
   // Protect code blocks from translation
   const codeBlocks: string[] = [];
-  const textWithPlaceholders = text.replace(/```[\s\S]*?```/g, (match) => {
+  const protectedText = text.replace(/```[\s\S]*?```/g, (match) => {
     codeBlocks.push(match);
-    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    return `__CODE_${codeBlocks.length - 1}__`;
   });
 
-  const paragraphs = textWithPlaceholders.split(/\n\n+/);
+  const paragraphs = protectedText.split(/\n\n+/);
 
-  // Classify each paragraph: needs translation or preserve as-is
-  const needsTranslation = paragraphs.map((p) => {
-    const t = p.trim();
-    if (!t) return false;
-    if (t.includes("__CODE_BLOCK_")) return false;
-    if (t.startsWith("|")) return false;
-    if (/^https?:\/\//.test(t)) return false;
-    if (/^[\s]*[`$#>]/.test(t)) return false;
-    if (/^[\s]*(import |from |const |let |var |function |class |def |if |for |while |return )/.test(t)) return false;
-    return true;
-  });
+  const isSkippable = (p: string) =>
+    p.trim() === "" ||
+    p.startsWith("__CODE_") ||
+    p.startsWith("|") ||
+    /^https?:\/\//.test(p);
 
-  // Pack translatable paragraphs into ≤3500-char batches joined by SEPARATOR
-  const batches: { indices: number[]; batchText: string }[] = [];
-  let batchIndices: number[] = [];
-  let batchLength = 0;
+  const translatableIndices = paragraphs
+    .map((p, i) => ({ p, i }))
+    .filter(({ p }) => !isSkippable(p))
+    .map(({ i }) => i);
 
-  for (let i = 0; i < paragraphs.length; i++) {
-    if (!needsTranslation[i]) continue;
-    const len = paragraphs[i].length + SEPARATOR.length;
-    if (batchLength + len > 3500 && batchIndices.length > 0) {
-      batches.push({ indices: batchIndices, batchText: batchIndices.map((j) => paragraphs[j]).join(SEPARATOR) });
-      batchIndices = [];
-      batchLength = 0;
-    }
-    batchIndices.push(i);
-    batchLength += len;
-  }
-  if (batchIndices.length > 0) {
-    batches.push({ indices: batchIndices, batchText: batchIndices.map((j) => paragraphs[j]).join(SEPARATOR) });
-  }
+  const results: string[] = [...paragraphs];
 
-  // Translate each batch (far fewer requests than per-paragraph)
-  const translatedMap: Record<number, string> = {};
+  for (let i = 0; i < translatableIndices.length; i += CONCURRENCY) {
+    const batch = translatableIndices.slice(i, i + CONCURRENCY);
+    onProgress?.(
+      `(${i + 1}〜${Math.min(i + CONCURRENCY, translatableIndices.length)}/${translatableIndices.length}段落)`
+    );
 
-  for (let b = 0; b < batches.length; b++) {
-    const { indices, batchText } = batches[b];
-    onProgress?.(`(${b + 1}/${batches.length}バッチ翻訳中)`);
+    await Promise.all(
+      batch.map(async (idx) => {
+        try {
+          results[idx] = await translateText(paragraphs[idx], targetLang);
+        } catch {
+          results[idx] = paragraphs[idx];
+        }
+      })
+    );
 
-    try {
-      const translated = await translateSingle(batchText, targetLang);
-      const parts = translated.split(SPLIT_RE);
-      indices.forEach((originalIdx, partIdx) => {
-        translatedMap[originalIdx] = parts[partIdx]?.trim() || paragraphs[originalIdx];
-      });
-    } catch {
-      indices.forEach((originalIdx) => {
-        translatedMap[originalIdx] = paragraphs[originalIdx];
-      });
-    }
-
-    if (b < batches.length - 1) {
-      await new Promise((r) => setTimeout(r, 500));
+    if (i + CONCURRENCY < translatableIndices.length) {
+      await new Promise((r) => setTimeout(r, 300));
     }
   }
 
-  // Reassemble paragraphs
-  let result = paragraphs
-    .map((p, i) => (translatedMap[i] !== undefined ? translatedMap[i] : p))
-    .join("\n\n");
+  let result = results.join("\n\n");
 
-  // Restore code blocks
   codeBlocks.forEach((block, i) => {
-    result = result.replace(`__CODE_BLOCK_${i}__`, block);
+    result = result.replace(`__CODE_${i}__`, block);
   });
 
   return result;
