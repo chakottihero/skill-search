@@ -85,7 +85,9 @@ export default function ContentTranslate({
   const [progress, setProgress] = useState({ current: 0, total: 0 });
 
   const detectedLang = detectLanguage(content);
-  const needsTranslation = detectedLang !== "other" && detectedLang !== lang;
+  // "other" = English content with emojis/special chars; treat as "en" for translation purposes
+  const effectiveLang = detectedLang === "other" ? "en" : detectedLang;
+  const needsTranslation = effectiveLang !== lang;
 
   useEffect(() => {
     setTranslatedContent(null);
