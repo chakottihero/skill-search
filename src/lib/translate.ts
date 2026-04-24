@@ -40,23 +40,32 @@ async function translateSingle(text: string, tl: string): Promise<string> {
 }
 
 export async function translateText(text: string, targetLang: string): Promise<string> {
-  if (text.length <= 1500) return translateSingle(text, targetLang);
+  const LIMIT = 1000;
+  if (text.length <= LIMIT) return translateSingle(text, targetLang);
 
-  // Split into sentence-level chunks ≤1500 chars and translate each
+  // Split into sentence-level chunks ≤LIMIT chars
   const sentences = text.match(/[^。.!?！？\n]+[。.!?！？\n]*/g) ?? [text];
   const chunks: string[] = [];
   let current = "";
   for (const s of sentences) {
-    if ((current + s).length > 1500) {
+    if ((current + s).length > LIMIT) {
       if (current) chunks.push(current.trim());
-      current = s;
+      // Single sentence longer than LIMIT: hard-split at char boundary
+      if (s.length > LIMIT) {
+        for (let i = 0; i < s.length; i += LIMIT) {
+          chunks.push(s.slice(i, i + LIMIT).trim());
+        }
+        current = "";
+      } else {
+        current = s;
+      }
     } else {
       current += s;
     }
   }
   if (current) chunks.push(current.trim());
 
-  const results = await Promise.all(chunks.map((c) => translateSingle(c, targetLang)));
+  const results = await Promise.all(chunks.filter(Boolean).map((c) => translateSingle(c, targetLang)));
   return results.join("");
 }
 

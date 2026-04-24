@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { translateText } from "@/lib/translate";
+import { translateText, detectLanguage } from "@/lib/translate";
 import type { Skill } from "@/lib/types";
 
 export default function RelatedSkills({
@@ -18,11 +18,18 @@ export default function RelatedSkills({
   const [translatedDescs, setTranslatedDescs] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!related.length || lang === "ja") return;
+    if (!related.length) return;
     const translations: Record<string, string> = {};
     Promise.all(
       related
-        .filter((s) => s.description?.trim() && s.description.trim() !== "|")
+        .filter((s) => {
+          const desc = s.description?.trim();
+          if (!desc || desc === "|" || desc === "||") return false;
+          // Only translate if detected language differs from current UI language
+          const detected = detectLanguage(desc);
+          const effective = detected === "other" ? "en" : detected;
+          return effective !== lang;
+        })
         .map(async (s) => {
           try {
             translations[s.id] = await translateText(s.description!, lang);
