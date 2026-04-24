@@ -48,7 +48,9 @@ export async function translateLongText(
   targetLang: string,
   onProgress?: (progress: string) => void
 ): Promise<string> {
-  const SEPARATOR = "\n\n|||SPLIT|||\n\n";
+  const SEPARATOR = "\n\n<<<PART_BREAK>>>\n\n";
+  // Regex handles the original and any full-width variant Google Translate may produce
+  const SPLIT_RE = /<<<PART_BREAK>>>|＜＜＜PART_BREAK＞＞＞/;
 
   // Protect code blocks from translation
   const codeBlocks: string[] = [];
@@ -100,9 +102,9 @@ export async function translateLongText(
 
     try {
       const translated = await translateSingle(batchText, targetLang);
-      const parts = translated.split(/\|\|\|SPLIT\|\|\|/);
+      const parts = translated.split(SPLIT_RE);
       indices.forEach((originalIdx, partIdx) => {
-        translatedMap[originalIdx] = parts[partIdx]?.trim() ?? paragraphs[originalIdx];
+        translatedMap[originalIdx] = parts[partIdx]?.trim() || paragraphs[originalIdx];
       });
     } catch {
       indices.forEach((originalIdx) => {
