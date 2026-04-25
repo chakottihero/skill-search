@@ -277,54 +277,54 @@ export const CATEGORIES: Category[] = [
   {
     name: "ビジネス・業務",
     icon: "💼",
-    keywords: ["business", "email", "meeting", "report", "project", "marketing", "sales", "業務"],
+    keywords: ["business", "email", "meeting", "report", "project", "marketing", "sales", "業務", "电商", "客服", "企业", "飞书", "钉钉", "工作"],
     subcategories: [
       {
         name: "資料作成",
-        keywords: ["presentation", "slide", "report", "proposal", "document", "資料", "スライド", "プレゼン"],
+        keywords: ["presentation", "slide", "report", "proposal", "document", "資料", "スライド", "プレゼン", "汇报", "方案"],
       },
       {
         name: "メール",
-        keywords: ["email", "メール", "mail", "newsletter", "outreach", "reply", "inbox"],
+        keywords: ["email", "メール", "mail", "newsletter", "outreach", "reply", "inbox", "邮件"],
       },
       {
         name: "スケジュール",
-        keywords: ["schedule", "calendar", "スケジュール", "meeting", "planning", "task management"],
+        keywords: ["schedule", "calendar", "スケジュール", "meeting", "planning", "task management", "日历", "会议"],
       },
       {
         name: "会計・経理",
-        keywords: ["accounting", "invoice", "expense", "会計", "経理", "budget", "bookkeeping", "tax", "payroll"],
+        keywords: ["accounting", "invoice", "expense", "会計", "経理", "budget", "bookkeeping", "tax", "payroll", "报销", "财务", "账单"],
       },
       {
         name: "マーケティング",
-        keywords: ["marketing", "マーケティング", "copywriting", "ad", "campaign", "seo content", "social media"],
+        keywords: ["marketing", "マーケティング", "copywriting", "ad", "campaign", "seo content", "social media", "电商", "运营", "推广", "选品"],
       },
       {
         name: "プロジェクト管理",
-        keywords: ["project management", "プロジェクト管理", "jira", "linear", "backlog", "sprint", "agile", "kanban"],
+        keywords: ["project management", "プロジェクト管理", "jira", "linear", "backlog", "sprint", "agile", "kanban", "飞书", "钉钉", "协作"],
       },
     ],
   },
   {
     name: "クリエイティブ",
     icon: "🎨",
-    keywords: ["design", "art", "creative", "music", "video", "game", "3d", "write", "story"],
+    keywords: ["design", "art", "creative", "music", "video", "game", "3d", "write", "story", "创作", "动漫", "anime", "诗词", "绘画", "插画"],
     subcategories: [
       {
         name: "デザイン",
-        keywords: ["design", "figma", "sketch", "ui design", "デザイン", "graphic", "icon", "logo"],
+        keywords: ["design", "figma", "sketch", "ui design", "デザイン", "graphic", "icon", "logo", "设计", "绘画", "插画"],
       },
       {
         name: "音楽",
-        keywords: ["music", "音楽", "audio", "midi", "chord", "melody", "composition"],
+        keywords: ["music", "音楽", "audio", "midi", "chord", "melody", "composition", "音乐", "作曲"],
       },
       {
         name: "動画",
-        keywords: ["video", "動画", "ffmpeg", "editing", "subtitle", "youtube", "clip"],
+        keywords: ["video", "動画", "ffmpeg", "editing", "subtitle", "youtube", "clip", "视频", "抖音", "剪辑", "短视频"],
       },
       {
         name: "ゲーム開発",
-        keywords: ["game", "ゲーム", "unity", "unreal", "pygame", "godot", "phaser", "shader"],
+        keywords: ["game", "ゲーム", "unity", "unreal", "pygame", "godot", "phaser", "shader", "游戏"],
       },
       {
         name: "3Dモデリング",
@@ -332,7 +332,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         name: "ライティング",
-        keywords: ["writing", "content", "blog", "article", "copy", "story", "novel", "ライティング", "文章"],
+        keywords: ["writing", "content", "blog", "article", "copy", "story", "novel", "ライティング", "文章", "写作", "小说", "诗词", "anime", "动漫", "创作"],
       },
     ],
   },
@@ -432,11 +432,11 @@ export const CATEGORIES: Category[] = [
   {
     name: "医療・ヘルスケア",
     icon: "🏥",
-    keywords: ["medical", "health", "clinical", "diagnosis", "patient", "drug", "ehr", "fhir", "hospital"],
+    keywords: ["medical", "health", "clinical", "diagnosis", "patient", "drug", "ehr", "fhir", "hospital", "医生", "医疗", "健康", "药", "诊断", "御医"],
     subcategories: [
       {
         name: "診断支援",
-        keywords: ["diagnosis", "diagnostic", "symptom", "disease", "condition", "medical image", "radiology"],
+        keywords: ["diagnosis", "diagnostic", "symptom", "disease", "condition", "medical image", "radiology", "诊断", "症状"],
       },
       {
         name: "電子カルテ・HL7",
@@ -444,11 +444,11 @@ export const CATEGORIES: Category[] = [
       },
       {
         name: "医薬品・治療",
-        keywords: ["drug", "medication", "treatment", "prescription", "pharmacy", "clinical trial"],
+        keywords: ["drug", "medication", "treatment", "prescription", "pharmacy", "clinical trial", "药", "治疗", "用药"],
       },
       {
         name: "ヘルスケアアプリ",
-        keywords: ["health", "wellness", "fitness", "nutrition", "wearable", "sleep", "mental health"],
+        keywords: ["health", "wellness", "fitness", "nutrition", "wearable", "sleep", "mental health", "健康", "养生", "医生", "御医"],
       },
     ],
   },
@@ -501,27 +501,31 @@ export const CATEGORIES: Category[] = [
   {
     name: "金融・経済",
     icon: "💰",
-    keywords: ["finance", "stock", "trading", "investment", "crypto", "blockchain", "accounting", "risk", "economic"],
+    keywords: ["finance", "stock", "trading", "investment", "crypto", "blockchain", "accounting", "risk", "economic", "投资", "交易", "财经", "量化", "港股", "a股", "期货", "基金"],
     subcategories: [
       {
         name: "株式・投資分析",
-        keywords: ["stock", "equity", "investment", "portfolio", "backtest", "technical analysis", "fundamental", "株式"],
+        keywords: ["stock", "equity", "investment", "portfolio", "backtest", "technical analysis", "fundamental", "株式", "投资", "股票", "港股", "a股", "量化", "选股"],
       },
       {
         name: "暗号通貨",
-        keywords: ["crypto", "bitcoin", "ethereum", "blockchain", "defi", "web3", "wallet", "nft", "solidity"],
+        keywords: ["crypto", "bitcoin", "ethereum", "blockchain", "defi", "web3", "wallet", "nft", "solidity", "加密", "数字货币"],
       },
       {
         name: "リスク管理",
-        keywords: ["risk", "var", "volatility", "hedge", "exposure", "risk management", "リスク"],
+        keywords: ["risk", "var", "volatility", "hedge", "exposure", "risk management", "リスク", "风险"],
       },
       {
         name: "会計・財務",
-        keywords: ["accounting", "financial statement", "balance sheet", "cash flow", "gaap", "ifrs", "決算", "財務"],
+        keywords: ["accounting", "financial statement", "balance sheet", "cash flow", "gaap", "ifrs", "決算", "財務", "财报", "财务分析", "研报"],
       },
       {
         name: "トレーディング",
-        keywords: ["trading", "algo trading", "quant", "strategy", "execution", "market data", "order", "トレード"],
+        keywords: ["trading", "algo trading", "quant", "strategy", "execution", "market data", "order", "トレード", "交易", "量化交易", "回测", "期货"],
+      },
+      {
+        name: "市場ニュース",
+        keywords: ["market news", "financial news", "财经", "财经资讯", "market analysis", "经济", "宏观"],
       },
     ],
   },
