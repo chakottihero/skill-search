@@ -96,12 +96,19 @@ export default function Home() {
           <p className="mt-4 text-base text-gray-400 tracking-[0.2em] sm:text-lg md:text-xl">
             Skills Research
           </p>
-          {totalSkills !== null && (
-            <p className="mt-3 text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-              {totalSkills.toLocaleString()}{" "}
-              <span className="text-base font-normal text-gray-400">{t.totalLabel}</span>
-            </p>
-          )}
+          <p className="mt-3 text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+            {totalSkills === null ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="inline-block h-8 w-28 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700 align-middle" />
+                <span className="text-base font-normal text-gray-300 dark:text-gray-600">{t.totalLabel}</span>
+              </span>
+            ) : (
+              <>
+                {totalSkills.toLocaleString()}{" "}
+                <span className="text-base font-normal text-gray-400">{t.totalLabel}</span>
+              </>
+            )}
+          </p>
         </div>
 
         {/* Search form */}

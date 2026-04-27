@@ -7,19 +7,22 @@ import { useTheme } from "@/lib/theme-context";
 import HamburgerPanel from "./HamburgerPanel";
 
 const T = {
-  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品・販売", submitShort: "出品・販売", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク", market: "🛒 売買" },
-  en: { home: "Home", search: "Search", categories: "Categories", submit: "Submit", submitShort: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark", market: "🛒 Market" },
-  zh: { home: "首页", search: "搜索", categories: "分类", submit: "提交", submitShort: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色", market: "🛒 市场" },
+  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品・販売", submitShort: "出品・販売", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
+  en: { home: "Home", search: "Search", categories: "Categories", submit: "Sell Skills", submitShort: "Sell", themeLabel: "Theme", light: "Light", dark: "Dark" },
+  zh: { home: "首页", search: "搜索", categories: "分类", submit: "出售技能", submitShort: "出售", themeLabel: "主题", light: "浅色", dark: "深色" },
 } as const;
 
 const LANG_NAMES: Record<Lang, string> = { ja: "日本語", en: "English", zh: "中文" };
+const LANG_SHORT: Record<Lang, string> = { ja: "JA", en: "EN", zh: "ZH" };
 
 export default function Header() {
   const { lang, setLang } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const t = T[lang];
 
@@ -27,6 +30,9 @@ export default function Header() {
     const handler = (e: MouseEvent) => {
       if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
         setSettingsOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -45,7 +51,7 @@ export default function Header() {
   return (
     <>
       <header className="bg-white dark:bg-[#0a0a0a]">
-        {/* Row 1: ☰ | Logo | ⚙ */}
+        {/* Row 1: ☰ | Logo | Lang + ⚙ */}
         <div className="border-b border-gray-100 px-4 py-4 dark:border-white/5 sm:px-6">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
             <button
@@ -63,57 +69,67 @@ export default function Header() {
               Skills リサーチ
             </Link>
 
-            <div ref={settingsRef} className="relative">
-              <button
-                onClick={() => setSettingsOpen((v) => !v)}
-                className="text-2xl text-gray-400 transition-colors hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-                aria-label="設定"
-              >
-                ⚙
-              </button>
+            <div className="flex items-center gap-2">
+              {/* Language switcher */}
+              <div ref={langRef} className="relative">
+                <button
+                  onClick={() => { setLangOpen((v) => !v); setSettingsOpen(false); }}
+                  className="flex items-center gap-1 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-sm text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-white/15 dark:text-gray-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
+                >
+                  <span className="hidden sm:inline">🌐 {LANG_NAMES[lang]}</span>
+                  <span className="sm:hidden">🌐 {LANG_SHORT[lang]}</span>
+                  <span className="text-xs text-gray-400">▾</span>
+                </button>
 
-              {settingsOpen && (
-                <div className="absolute right-0 top-10 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1a1a1a]">
-                  <div className="border-b border-gray-100 px-3 py-2 text-xs font-medium text-gray-400 dark:border-white/10 dark:text-gray-500">
-                    {t.themeLabel}
-                  </div>
-                  <div className="flex gap-2 p-2">
-                    <button
-                      onClick={() => setTheme("light")}
-                      className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-colors ${theme === "light" ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5"}`}
-                    >
-                      ☀ {t.light}
-                    </button>
-                    <button
-                      onClick={() => setTheme("dark")}
-                      className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-colors ${theme === "dark" ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5"}`}
-                    >
-                      🌙 {t.dark}
-                    </button>
-                  </div>
-
-                  <div className="border-t border-gray-100 px-3 py-2 text-xs font-medium text-gray-400 dark:border-white/10 dark:text-gray-500">
-                    {t.langLabel}
-                  </div>
-                  {(["ja", "en", "zh"] as Lang[]).map((l) => (
-                    <label
-                      key={l}
-                      className="flex cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
-                    >
-                      <input
-                        type="radio"
-                        name="language"
-                        checked={lang === l}
-                        onChange={() => setLang(l)}
-                        className="accent-indigo-500"
-                      />
-                      <span className={`text-sm ${lang === l ? "text-indigo-600 dark:text-indigo-400" : "text-gray-600 dark:text-gray-300"}`}>
+                {langOpen && (
+                  <div className="absolute right-0 top-10 z-50 w-36 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1a1a1a]">
+                    {(["ja", "en", "zh"] as Lang[]).map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => { setLang(l); setLangOpen(false); }}
+                        className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${lang === l ? "font-medium text-indigo-600 dark:text-indigo-400" : "text-gray-600 dark:text-gray-300"}`}
+                      >
+                        {lang === l && <span className="text-xs">✓</span>}
+                        {lang !== l && <span className="w-3" />}
                         {LANG_NAMES[l]}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Theme settings */}
+              <div ref={settingsRef} className="relative">
+                <button
+                  onClick={() => { setSettingsOpen((v) => !v); setLangOpen(false); }}
+                  className="text-2xl text-gray-400 transition-colors hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
+                  aria-label="設定"
+                >
+                  ⚙
+                </button>
+
+                {settingsOpen && (
+                  <div className="absolute right-0 top-10 z-50 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1a1a1a]">
+                    <div className="border-b border-gray-100 px-3 py-2 text-xs font-medium text-gray-400 dark:border-white/10 dark:text-gray-500">
+                      {t.themeLabel}
+                    </div>
+                    <div className="flex gap-2 p-2">
+                      <button
+                        onClick={() => setTheme("light")}
+                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-colors ${theme === "light" ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5"}`}
+                      >
+                        ☀ {t.light}
+                      </button>
+                      <button
+                        onClick={() => setTheme("dark")}
+                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-colors ${theme === "dark" ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5"}`}
+                      >
+                        🌙 {t.dark}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
