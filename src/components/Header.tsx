@@ -40,7 +40,6 @@ export default function Header() {
     { href: "/", full: t.home, short: t.home },
     { href: "/search", full: t.search, short: t.search },
     { href: "/categories", full: t.categories, short: t.categories },
-    { href: "/submit", full: t.submit, short: t.submitShort },
   ];
 
   return (
@@ -121,9 +120,7 @@ export default function Header() {
 
         {/* Row 2: Nav links */}
         <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
-          <div className="mx-auto flex max-w-6xl items-center justify-between">
-            {/* Spacer to keep nav centered on desktop */}
-            <div className="hidden w-24 md:block" />
+          <div className="mx-auto flex max-w-6xl justify-center">
             {/* PC: gap-8 text-sm */}
             <nav className="hidden items-center gap-8 md:flex">
               {navItems.map(({ href, full }) => (
@@ -135,6 +132,12 @@ export default function Header() {
                   {full}
                 </Link>
               ))}
+              <a
+                href="https://skills-market-seven.vercel.app"
+                className="py-2 text-sm transition-colors hover:text-indigo-400 text-gray-400"
+              >
+                {t.submit}
+              </a>
             </nav>
             {/* Mobile: gap-6 text-xs */}
             <nav className="flex items-center gap-6 md:hidden">
@@ -147,16 +150,13 @@ export default function Header() {
                   {short}
                 </Link>
               ))}
+              <a
+                href="https://skills-market-seven.vercel.app"
+                className="py-2 text-xs transition-colors hover:text-indigo-400 text-gray-400"
+              >
+                {t.submitShort}
+              </a>
             </nav>
-            {/* Market button */}
-            <a
-              href="https://skills-market-seven.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 bg-purple-600 px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors hover:bg-purple-700 whitespace-nowrap"
-            >
-              {t.market}
-            </a>
           </div>
         </div>
       </header>
