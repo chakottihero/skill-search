@@ -151,7 +151,7 @@ export default async function SkillDetailPage({ params }: Props) {
 
       <ContentTranslate content={fullContent} cacheKey={skill.id} />
 
-      <div className="mt-10 flex gap-4 border-t border-gray-200 pt-6 dark:border-white/10">
+      <div className="mt-10 flex flex-wrap gap-4 border-t border-gray-200 pt-6 dark:border-white/10">
         <a href={skill.repoUrl} target="_blank" rel="noopener noreferrer"
           className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-white/10 dark:text-gray-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400">
           GitHub で開く
@@ -159,6 +159,14 @@ export default async function SkillDetailPage({ params }: Props) {
         <a href={skill.rawUrl} target="_blank" rel="noopener noreferrer"
           className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700 dark:border-white/10 dark:text-gray-400 dark:hover:border-white/30 dark:hover:text-white">
           Raw を見る
+        </a>
+        <a
+          href="https://skills-market-seven.vercel.app/sell"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-purple-300 px-4 py-2 text-sm text-purple-500 transition-colors hover:border-purple-400 hover:text-purple-600 dark:border-purple-500/40 dark:text-purple-400 dark:hover:border-purple-400 dark:hover:text-purple-300"
+        >
+          マーケットで出品する →
         </a>
       </div>
 

@@ -7,9 +7,9 @@ import { useTheme } from "@/lib/theme-context";
 import HamburgerPanel from "./HamburgerPanel";
 
 const T = {
-  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品・販売", submitShort: "出品・販売", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク" },
-  en: { home: "Home", search: "Search", categories: "Categories", submit: "Submit", submitShort: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark" },
-  zh: { home: "首页", search: "搜索", categories: "分类", submit: "提交", submitShort: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色" },
+  ja: { home: "ホーム", search: "検索", categories: "カテゴリ", submit: "出品・販売", submitShort: "出品・販売", langLabel: "言語", themeLabel: "テーマ", light: "ライト", dark: "ダーク", market: "🛒 売買" },
+  en: { home: "Home", search: "Search", categories: "Categories", submit: "Submit", submitShort: "Submit", langLabel: "Language", themeLabel: "Theme", light: "Light", dark: "Dark", market: "🛒 Market" },
+  zh: { home: "首页", search: "搜索", categories: "分类", submit: "提交", submitShort: "提交", langLabel: "语言", themeLabel: "主题", light: "浅色", dark: "深色", market: "🛒 市场" },
 } as const;
 
 const LANG_NAMES: Record<Lang, string> = { ja: "日本語", en: "English", zh: "中文" };
@@ -121,7 +121,9 @@ export default function Header() {
 
         {/* Row 2: Nav links */}
         <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
-          <div className="mx-auto flex max-w-6xl justify-center">
+          <div className="mx-auto flex max-w-6xl items-center justify-between">
+            {/* Spacer to keep nav centered on desktop */}
+            <div className="hidden w-24 md:block" />
             {/* PC: gap-8 text-sm */}
             <nav className="hidden items-center gap-8 md:flex">
               {navItems.map(({ href, full }) => (
@@ -146,6 +148,15 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
+            {/* Market button */}
+            <a
+              href="https://skills-market-seven.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 bg-purple-600 px-3 py-1 text-sm font-medium text-white rounded-lg transition-colors hover:bg-purple-700 whitespace-nowrap"
+            >
+              {t.market}
+            </a>
           </div>
         </div>
       </header>

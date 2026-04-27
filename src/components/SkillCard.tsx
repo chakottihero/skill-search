@@ -122,6 +122,17 @@ export default function SkillCard({ skill, index = 0 }: { skill: Skill; index?: 
           <CopyButton command={skill.installCommand} />
         </div>
       )}
+
+      <div className="mt-2">
+        <a
+          href="https://skills-market-seven.vercel.app/sell"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-purple-400 transition-colors hover:text-purple-300 dark:text-purple-500 dark:hover:text-purple-400"
+        >
+          マーケットで出品する →
+        </a>
+      </div>
     </article>
   );
 }

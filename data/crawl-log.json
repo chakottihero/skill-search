@@ -7,5 +7,14 @@
     "skipped": 2524,
     "errors": 0,
     "durationSeconds": 20429
+  },
+  {
+    "runAt": "2026-04-24T04:32:36.385Z",
+    "mode": "extended",
+    "totalAfter": 70114,
+    "added": 37681,
+    "skipped": 17844,
+    "errors": 2,
+    "durationSeconds": 26141
   }
 ]

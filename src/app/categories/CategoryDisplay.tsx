@@ -4,6 +4,28 @@ import { useState } from "react";
 import Link from "next/link";
 import type { CategoryStat } from "@/lib/search";
 
+const MARKET_CATEGORY: Record<string, string> = {
+  "開発ツール": "dev-tools",
+  "Web開発": "web-dev",
+  "データ・分析": "data-analytics",
+  "DevOps": "devops",
+  "AI・機械学習": "ai-ml",
+  "ドキュメント": "docs",
+  "ビジネス・業務": "business",
+  "ユーティリティ": "utility",
+  "セキュリティ": "security",
+  "クリエイティブ": "creative",
+  "学習・教育": "education",
+  "モバイル": "mobile",
+  "言語・フレームワーク": "lang-framework",
+  "法律・コンプライアンス": "legal",
+  "金融・経済": "finance",
+  "医療・ヘルスケア": "medical",
+  "化学・生命科学": "bio-science",
+  "数学・物理": "math-physics",
+  "その他": "other",
+};
+
 export default function CategoryDisplay({
   stats,
   totalSkills,
@@ -39,27 +61,39 @@ export default function CategoryDisplay({
             key={cat.name}
             className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10"
           >
-            <button
-              onClick={() => setExpanded(expanded === cat.name ? null : cat.name)}
-              className="flex w-full items-center justify-between bg-gray-50 px-5 py-4 transition-colors hover:bg-indigo-50 dark:bg-white/5 dark:hover:bg-indigo-500/5"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl" aria-hidden="true">{cat.icon}</span>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-900 dark:text-white">{cat.name}</div>
-                  <div className="text-sm text-gray-400 dark:text-gray-500">
-                    {cat.count.toLocaleString()} 件 · {cat.subcategories.length} サブカテゴリ
+            <div className="flex w-full items-center bg-gray-50 dark:bg-white/5">
+              <button
+                onClick={() => setExpanded(expanded === cat.name ? null : cat.name)}
+                className="flex flex-1 items-center justify-between px-5 py-4 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-500/5"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl" aria-hidden="true">{cat.icon}</span>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white">{cat.name}</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500">
+                      {cat.count.toLocaleString()} 件 · {cat.subcategories.length} サブカテゴリ
+                    </div>
                   </div>
                 </div>
-              </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 text-gray-400 transition-transform ${expanded === cat.name ? "rotate-90" : ""}`}
-                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 text-gray-400 transition-transform ${expanded === cat.name ? "rotate-90" : ""}`}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              {MARKET_CATEGORY[cat.name] && (
+                <a
+                  href={`https://skills-market-seven.vercel.app/skills?category=${MARKET_CATEGORY[cat.name]}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 px-4 py-1.5 mr-3 rounded-lg border border-purple-200 text-xs text-purple-600 transition-colors hover:bg-purple-50 dark:border-purple-500/30 dark:text-purple-400 dark:hover:bg-purple-500/10 whitespace-nowrap"
+                >
+                  売買 →
+                </a>
+              )}
+            </div>
 
             {expanded === cat.name && (
               <div className="grid gap-1 bg-white p-3 sm:grid-cols-2 lg:grid-cols-3 dark:bg-gray-900/30">

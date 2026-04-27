@@ -17,6 +17,9 @@ const T = {
     totalLabel: "件のスキル",
     viewAll: "すべて表示 →",
     viewCategories: "カテゴリ一覧 →",
+    marketBanner: "スキルを売買しませんか？",
+    marketSub: "Skills Market で出品・購入",
+    marketCta: "マーケットへ →",
   },
   en: {
     placeholder: "Search skills...",
@@ -27,6 +30,9 @@ const T = {
     totalLabel: "skills indexed",
     viewAll: "View all →",
     viewCategories: "Browse categories →",
+    marketBanner: "Want to buy or sell skills?",
+    marketSub: "List or purchase on Skills Market",
+    marketCta: "Go to Market →",
   },
   zh: {
     placeholder: "Search skills...",
@@ -37,6 +43,9 @@ const T = {
     totalLabel: "个技能",
     viewAll: "查看全部 →",
     viewCategories: "浏览分类 →",
+    marketBanner: "想要买卖技能？",
+    marketSub: "在 Skills Market 上架或购买",
+    marketCta: "前往市场 →",
   },
 };
 
@@ -128,6 +137,20 @@ export default function Home() {
             </button>
           </div>
         </form>
+
+        {/* Market banner */}
+        <a
+          href="https://skills-market-seven.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 text-white transition-opacity hover:opacity-90"
+        >
+          <div>
+            <div className="font-semibold">{t.marketBanner}</div>
+            <div className="text-sm text-white/80">{t.marketSub}</div>
+          </div>
+          <span className="flex-shrink-0 text-sm font-medium">{t.marketCta}</span>
+        </a>
 
         {/* Popular categories */}
         {topCategories.length > 0 && (
