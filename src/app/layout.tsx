@@ -17,9 +17,32 @@ const orbitron = Orbitron({
   variable: "--font-orbitron",
 });
 
+const SITE_URL = "https://search.aiskill-market.com";
+const SITE_NAME = "AI Skill Search";
+const OG_TITLE = "AI Skill Search - 74,000+のAIスキルを横断検索";
+const OG_DESCRIPTION = "74,000件以上のAIスキルを横断検索できるプラットフォーム";
+const DEFAULT_DESCRIPTION = "74,000件以上のAIエージェント向けスキルファイル（SKILL.md）を検索。Claude Code・Cursor・Copilot対応スキルを無料で探せます。";
+
 export const metadata: Metadata = {
-  title: "Skills Research - AIエージェントスキル検索",
-  description: "AIエージェントスキルを検索するプラットフォーム",
+  title: { default: `${SITE_NAME} — AIエージェントスキル検索`, template: `%s — ${SITE_NAME}` },
+  description: DEFAULT_DESCRIPTION,
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: "ja_JP",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: SITE_NAME }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
