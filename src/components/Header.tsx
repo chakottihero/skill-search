@@ -39,6 +39,17 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    const open = () => setPanelOpen(true);
+    const close = () => setPanelOpen(false);
+    window.addEventListener("tutorial:open-sidebar", open);
+    window.addEventListener("tutorial:close-sidebar", close);
+    return () => {
+      window.removeEventListener("tutorial:open-sidebar", open);
+      window.removeEventListener("tutorial:close-sidebar", close);
+    };
+  }, []);
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
@@ -55,6 +66,7 @@ export default function Header() {
         <div className="border-b border-gray-100 px-4 py-4 dark:border-white/5 sm:px-6">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
             <button
+              id="tutorial-hamburger"
               onClick={() => setPanelOpen(true)}
               className="flex-shrink-0 text-2xl text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               aria-label="メニュー"
@@ -73,6 +85,7 @@ export default function Header() {
               {/* Language switcher */}
               <div ref={langRef} className="relative">
                 <button
+                  id="tutorial-language"
                   onClick={() => { setLangOpen((v) => !v); setSettingsOpen(false); }}
                   className="flex items-center gap-1 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-sm text-gray-600 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-white/15 dark:text-gray-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
                 >
@@ -138,7 +151,7 @@ export default function Header() {
         <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
           <div className="mx-auto flex max-w-6xl justify-center">
             {/* PC: gap-8 text-sm */}
-            <nav className="hidden items-center gap-8 md:flex">
+            <nav id="tutorial-nav" className="hidden items-center gap-8 md:flex">
               {navItems.map(({ href, full }) => (
                 <Link
                   key={href}

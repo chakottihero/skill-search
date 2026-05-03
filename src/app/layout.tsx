@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/lib/theme-context";
 import Header from "@/components/Header";
 import ClearCacheButton from "@/components/ClearCacheButton";
+import Tutorial from "@/components/Tutorial";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <LanguageProvider>
+            <Tutorial />
             <Header />
             <main className="flex-1">{children}</main>
             <footer className="border-t border-gray-200 px-6 py-6 text-center text-sm text-gray-400 dark:border-white/10 dark:text-gray-600">
