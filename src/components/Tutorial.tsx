@@ -142,7 +142,7 @@ function StepDots({ current }: { current: number }) {
 function TooltipCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`fixed z-[9991] bg-white rounded-xl shadow-2xl p-4 max-w-xs w-[calc(100vw-32px)] sm:w-72 ${className}`}
+      className={`fixed z-[9991] bg-white rounded-xl shadow-2xl p-4 w-[calc(100vw-32px)] sm:w-72 bottom-4 left-4 right-4 ${className}`}
       style={{ animation: "tutFade 0.3s ease" }}
     >
       {children}
@@ -288,7 +288,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-search" padding={12} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="top-[45%] left-1/2 -translate-x-1/2">
+          <TooltipCard className="sm:top-[45%] sm:bottom-auto sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
@@ -310,7 +310,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-nav" padding={6} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="top-24 left-1/2 -translate-x-1/2">
+          <TooltipCard className="sm:top-24 sm:bottom-auto sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
@@ -332,7 +332,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-language" padding={8} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="top-16 right-4">
+          <TooltipCard className="sm:top-16 sm:bottom-auto sm:left-auto sm:right-4">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
@@ -354,7 +354,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-hamburger" padding={8} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="top-16 left-16">
+          <TooltipCard className="sm:top-16 sm:bottom-auto sm:left-16 sm:right-auto">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
