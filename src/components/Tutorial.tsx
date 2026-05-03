@@ -310,7 +310,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-nav" padding={6} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="sm:top-24 sm:bottom-auto sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
+          <TooltipCard className="top-1/2 bottom-auto left-1/2 right-auto -translate-x-1/2 -translate-y-1/2">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
@@ -332,7 +332,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-language" padding={8} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="sm:top-16 sm:bottom-auto sm:left-auto sm:right-4">
+          <TooltipCard className="top-1/2 bottom-auto left-1/2 right-auto -translate-x-1/2 -translate-y-1/2">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
@@ -354,7 +354,7 @@ export default function Tutorial() {
         <>
           <SpotlightOverlay targetId="tutorial-hamburger" padding={8} />
           <div className="fixed inset-0 z-[9989] pointer-events-none" />
-          <TooltipCard className="sm:top-16 sm:bottom-auto sm:left-16 sm:right-auto">
+          <TooltipCard className="top-1/2 bottom-auto left-1/2 right-auto -translate-x-1/2 -translate-y-1/2">
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
