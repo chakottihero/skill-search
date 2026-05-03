@@ -148,10 +148,10 @@ export default function Header() {
         </div>
 
         {/* Row 2: Nav links */}
-        <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
+        <div id="tutorial-nav" className="border-b border-gray-200 px-4 py-2 dark:border-gray-800 sm:px-6">
           <div className="mx-auto flex max-w-6xl justify-center">
             {/* PC: gap-8 text-sm */}
-            <nav id="tutorial-nav" className="hidden items-center gap-8 md:flex">
+            <nav className="hidden items-center gap-8 md:flex">
               {navItems.map(({ href, full }) => (
                 <Link
                   key={href}

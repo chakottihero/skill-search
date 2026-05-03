@@ -6,7 +6,7 @@ import { setCookie, getCookieWithMigration } from "@/lib/cookies";
 
 const COOKIE_KEY = "tutorial_completed";
 const SKIP_PATHS = ["/submit"];
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 // ─── translations ──────────────────────────────────────────────────────────────
 
@@ -27,10 +27,12 @@ const T = {
     step4Tooltip: "ここから表示言語を日本語・English・中文に切り替えられます。",
     step5Tooltip: "このボタンをタップするとサイドメニューが開きます。",
     step5Tap: "☰ タップして開く",
-    step6Title: "ガイド完了！",
-    step6Body: "これで基本的な使い方は以上です。さっそくスキルを検索してみましょう！",
-    step6Search: "スキルを検索する",
-    step6Home: "ホームに戻る",
+    step6Title: "メニューを確認",
+    step6Body: "カテゴリ・検索・出品など、サイドバーから各機能にアクセスできます。",
+    step7Title: "ガイド完了！",
+    step7Body: "これで基本的な使い方は以上です。さっそくスキルを検索してみましょう！",
+    step7Search: "スキルを検索する",
+    step7Home: "ホームに戻る",
     dots: (current: number) => `ステップ ${current + 1} / ${TOTAL_STEPS}`,
   },
   en: {
@@ -49,10 +51,12 @@ const T = {
     step4Tooltip: "Switch the display language between 日本語, English, and 中文 here.",
     step5Tooltip: "Tap this button to open the side menu.",
     step5Tap: "☰ Tap to open",
-    step6Title: "Guide Complete!",
-    step6Body: "That covers the basics. Let's start searching for skills!",
-    step6Search: "Search Skills",
-    step6Home: "Back to Home",
+    step6Title: "Check the Menu",
+    step6Body: "Access categories, search, and submission features from the sidebar.",
+    step7Title: "Guide Complete!",
+    step7Body: "That covers the basics. Let's start searching for skills!",
+    step7Search: "Search Skills",
+    step7Home: "Back to Home",
     dots: (current: number) => `Step ${current + 1} / ${TOTAL_STEPS}`,
   },
   zh: {
@@ -71,10 +75,12 @@ const T = {
     step4Tooltip: "在这里可以将显示语言切换为日本語、English 或中文。",
     step5Tooltip: "点击此按钮可以打开侧边菜单。",
     step5Tap: "☰ 点击打开",
-    step6Title: "引导完成！",
-    step6Body: "基本使用方法就介绍到这里。现在开始搜索技能吧！",
-    step6Search: "搜索技能",
-    step6Home: "返回首页",
+    step6Title: "查看菜单",
+    step6Body: "您可以从侧边栏访问类别、搜索、提交等功能。",
+    step7Title: "引导完成！",
+    step7Body: "基本使用方法就介绍到这里。现在开始搜索技能吧！",
+    step7Search: "搜索技能",
+    step7Home: "返回首页",
     dots: (current: number) => `步骤 ${current + 1} / ${TOTAL_STEPS}`,
   },
 } as const;
@@ -208,8 +214,13 @@ export default function Tutorial() {
 
   const handleNext = () => {
     if (step === 5) {
+      // open sidebar then advance to step 6 (sidebar explanation)
       window.dispatchEvent(new CustomEvent("tutorial:open-sidebar"));
       setTimeout(() => setStep(6), 420);
+    } else if (step === 6) {
+      // close sidebar then show completion modal
+      window.dispatchEvent(new CustomEvent("tutorial:close-sidebar"));
+      setTimeout(() => setStep(7), 300);
     } else {
       setStep((s) => s + 1);
     }
@@ -338,7 +349,7 @@ export default function Tutorial() {
         </>
       )}
 
-      {/* Step 5: hamburger highlight */}
+      {/* Step 5: hamburger button spotlight */}
       {step === 5 && (
         <>
           <SpotlightOverlay targetId="tutorial-hamburger" padding={8} />
@@ -347,7 +358,7 @@ export default function Tutorial() {
             <button onClick={skip} className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600">
               {txt.skip}
             </button>
-            <p className="text-xs font-semibold text-indigo-600 mb-1">Step 5</p>
+            <p className="text-xs font-semibold text-indigo-600 mb-1">Step 6</p>
             <p className="text-sm text-gray-700 leading-relaxed mb-4">{txt.step5Tooltip}</p>
             <button
               onClick={handleNext}
@@ -360,34 +371,60 @@ export default function Tutorial() {
         </>
       )}
 
-      {/* Step 6: sidebar open + completion */}
+      {/* Step 6: sidebar open — menu explanation */}
       {step === 6 && (
         <>
+          {/* darken everything to the right of the sidebar */}
           <div
-            className="fixed top-0 bottom-0 z-[9990] bg-black/50 pointer-events-none"
+            className="fixed top-0 bottom-0 z-[9990] bg-black/60 pointer-events-none"
             style={{ left: "min(320px, 85vw)" }}
           />
-          <ModalCard>
-            <div className="text-4xl text-center mb-4">🎉</div>
-            <h2 className="text-xl font-bold text-gray-900 text-center mb-3">{txt.step6Title}</h2>
-            <p className="text-sm text-gray-600 leading-relaxed text-center mb-6">{txt.step6Body}</p>
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={() => { complete(); router.push("/search"); }}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity"
-              >
-                {txt.step6Search}
-              </button>
-              <button
-                onClick={complete}
-                className="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
-              >
-                {txt.step6Home}
-              </button>
-            </div>
+          {/* explanation sheet — bottom sheet on mobile, right-aligned card on sm+ */}
+          <div
+            className="fixed z-[9991] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl p-5
+                       bottom-0 left-0 right-0
+                       sm:bottom-auto sm:top-1/2 sm:left-auto sm:right-4 sm:-translate-y-1/2 sm:w-72"
+            style={{ animation: "tutFade 0.3s ease" }}
+          >
+            <button onClick={skip} className="absolute top-3 right-4 text-xs text-gray-400 hover:text-gray-600">
+              {txt.skip}
+            </button>
+            <p className="text-xs font-semibold text-indigo-600 mb-1">Step 7</p>
+            <p className="text-sm font-bold text-gray-900 mb-2">{txt.step6Title}</p>
+            <p className="text-sm text-gray-600 leading-relaxed mb-4">{txt.step6Body}</p>
+            <button
+              onClick={handleNext}
+              className="w-full py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+            >
+              {txt.next}
+            </button>
             <StepDots current={6} />
-          </ModalCard>
+          </div>
         </>
+      )}
+
+      {/* Step 7: completion modal */}
+      {step === 7 && (
+        <ModalCard>
+          <div className="text-4xl text-center mb-4">🎉</div>
+          <h2 className="text-xl font-bold text-gray-900 text-center mb-3">{txt.step7Title}</h2>
+          <p className="text-sm text-gray-600 leading-relaxed text-center mb-6">{txt.step7Body}</p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => { complete(); router.push("/search"); }}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity"
+            >
+              {txt.step7Search}
+            </button>
+            <button
+              onClick={complete}
+              className="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+            >
+              {txt.step7Home}
+            </button>
+          </div>
+          <StepDots current={7} />
+        </ModalCard>
       )}
     </>
   );
