@@ -3,6 +3,21 @@ import SkillCard from "@/components/SkillCard";
 import Link from "next/link";
 import type { SearchOptions } from "@/lib/types";
 import { CATEGORIES } from "@/lib/categories";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const q = sp.q ?? "";
+  const title = q ? `「${q}」の検索結果` : "スキル検索";
+  const description = q
+    ? `「${q}」に関連するAIエージェントスキルの検索結果一覧です。`
+    : "キーワード・カテゴリ・対応ツールでAIエージェントスキルを絞り込み検索できます。";
+  return {
+    title,
+    description,
+    openGraph: { title: `${title} — AI Skill Search`, description },
+  };
+}
 
 const PAGE_SIZE = 50;
 

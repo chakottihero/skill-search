@@ -38,9 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const skill = await findSkillById(id);
   if (!skill) return { title: "スキルが見つかりません" };
+  const description = (skill.description || skill.content || "").slice(0, 160);
   return {
-    title: `${skill.name} — Skills Research`,
-    description: skill.description || skill.content,
+    title: skill.name,
+    description,
+    openGraph: {
+      title: `${skill.name} — AI Skill Search`,
+      description,
+    },
   };
 }
 

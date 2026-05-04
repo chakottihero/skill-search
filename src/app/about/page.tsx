@@ -2,7 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AIエージェントスキルとは — Skills Research",
+  title: "AIエージェントスキルとは",
+  description: "SKILL.mdとは何か、Claude Code・Cursor・Copilotなど対応AIツールの概要と使い方を解説します。",
+  openGraph: {
+    title: "AIエージェントスキルとは — AI Skill Search",
+    description: "SKILL.mdとは何か、Claude Code・Cursor・Copilotなど対応AIツールの概要と使い方を解説します。",
+  },
 };
 
 const TOOLS = [
