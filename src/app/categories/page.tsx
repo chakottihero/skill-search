@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "カテゴリ一覧 — AI Skill Search",
     description: "開発ツール・Web開発・AI/ML・データ分析など、カテゴリ別にAIエージェントスキルを探せます。",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "AI Skill Search" }],
   },
 };
 

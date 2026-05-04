@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AIエージェントスキルとは — AI Skill Search",
     description: "SKILL.mdとは何か、Claude Code・Cursor・Copilotなど対応AIツールの概要と使い方を解説します。",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "AI Skill Search" }],
   },
 };
 

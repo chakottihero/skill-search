@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${skill.name} — AI Skill Search`,
       description,
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "AI Skill Search" }],
     },
   };
 }

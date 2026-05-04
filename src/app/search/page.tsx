@@ -15,7 +15,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title,
     description,
-    openGraph: { title: `${title} — AI Skill Search`, description },
+    openGraph: {
+      title: `${title} — AI Skill Search`,
+      description,
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "AI Skill Search" }],
+    },
   };
 }
 
