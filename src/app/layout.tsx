@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/lib/theme-context";
 import Header from "@/components/Header";
 import ClearCacheButton from "@/components/ClearCacheButton";
 import Tutorial from "@/components/Tutorial";
+import { Analytics } from "@vercel/analytics/next";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -73,6 +74,7 @@ export default function RootLayout({
             </footer>
           </LanguageProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
